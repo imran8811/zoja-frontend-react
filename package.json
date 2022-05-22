@@ -5,8 +5,8 @@
   "homepage": "https://zoja.pk",
   "scripts": {
     "dev": "next dev",
-    "build": "next build && next export",
-    "start": "next start",
+    "build": "next build",
+    "start": "next server.js",
     "lint": "next lint",
     "test": "jest test"
   },
