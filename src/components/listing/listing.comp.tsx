@@ -47,8 +47,8 @@ const Listing: FC = () => {
     axios.post(SEARCH, {
       type: type
     }).then((res) => {
-      if(res.data.data.length > 0) {
-        setListing(res.data.data);
+      if(res.data.length > 0) {
+        setListing(res.data);
         setNoRecordFound(false)
       } else {
         setListing([]);

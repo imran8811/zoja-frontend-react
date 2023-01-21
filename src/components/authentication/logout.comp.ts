@@ -7,6 +7,9 @@ const userLogout = async() => {
       localStorage.removeItem('next')
       localStorage.removeItem('userData')
     }
+  }, (error)  => {
+    localStorage.removeItem('next')
+    localStorage.removeItem('userData')
   })
   return true;
 }

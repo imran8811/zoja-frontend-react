@@ -1,10 +1,11 @@
 import React, { FC, useContext, useEffect } from "react";
 import useState from 'react-usestateref';
 import { useRouter } from "next/dist/client/router";
-import axios from 'axios';
+const axios = require('axios');
 import { useForm } from 'react-hook-form';
 import { ToastContainer, toast } from 'react-toastify';
 import Link from 'next/link';
+// axios.default.credentials = true;
 
 import { AGE_SELECTION, POPULAR_CASTS, CITIES, ORIGIN, RELIGIONS, STATUS } from '../../constants';
 import { CREATE_PROFILE } from "../../endpoints";
@@ -32,15 +33,15 @@ const CreateProfile:FC = () => {
       return;
     }
     axios.post(CREATE_PROFILE, data).then(res => {
-      console.log(res);
-      if(res.data.type === 'success') {
+      console.log(res.data.type);
+      if(res.data?.type === 'success') {
         const userData = {
           session : true,
-          fullName : res.data.data.fullName,
-          id : res.data.data._id
+          fullName : res.data.user.fullName,
+          id : res.data.user.id
         }
         localStorage.setItem('userData', JSON.stringify(userData))
-        const userType = res.data.data.type === 'bride'? 'groom' : 'bride';
+        const userType = res.data.user.type === 'bride'? 'groom' : 'bride';
         router.push(`/search?type=${userType}`);
       } else if(res.data.code === 11000) {
         setEmailAlreadyRegistered(true)
