@@ -9,51 +9,39 @@ import Link from 'next/link';
 
 import { AGE_SELECTION, POPULAR_CASTS, CITIES, ORIGIN, RELIGIONS, STATUS } from '../../constants';
 import { CREATE_PROFILE } from "../../endpoints";
-import { validateEmail, validatePassword } from "../../utilities";
+import { validateEmail, validatePassword, getSession } from "../../utilities";
 
 const CreateProfile:FC = () => {
   const router = useRouter();
   const { register, handleSubmit, getValues, watch, formState: { errors} } = useForm();
-  const [invalidEmail, setInvalidEmail] = useState(false)
-  const [emailAlreadyRegistered, setEmailAlreadyRegistered] = useState(false)
-  const [confirmPasswordInvalid, setConfirmPasswordInvalid] = useState(false)
+  // const [invalidEmail, setInvalidEmail] = useState(false)
+  // const [emailAlreadyRegistered, setEmailAlreadyRegistered] = useState(false)
+  // const [confirmPasswordInvalid, setConfirmPasswordInvalid] = useState(false)
   const [professionType, setProfessionType] = useState('Job')
   const [degreeLevel, setDegreeLevel] = useState('')
   const [religion, setReligion] = useState('')
   const [disability, setDisability] = useState([])
   const [status, setStatus, statusRef] = useState()
+  const [userData, setUserData] = useState()
+  const [loggedIn, setLoggedIn, loggedInRef] = useState<Boolean>(false);
+
+  useEffect(() => {
+    setLoggedIn(getSession())
+    setUserData(JSON.parse(localStorage.getItem('userData')))
+  }, [])
 
   const onSubmit = (data) => {
-    setInvalidEmail(false)
-    setEmailAlreadyRegistered(false)
-    setConfirmPasswordInvalid(false)
-    const { type, email, password, fullName, confirmPassword } = getValues()
-    if(password !== confirmPassword) {
-      setConfirmPasswordInvalid(true);
-      return;
-    }
-    axios.post(CREATE_PROFILE, data).then(res => {
-      console.log(res.data.type);
-      if(res.data?.type === 'success') {
-        const userData = {
-          session : true,
-          fullName : res.data.user.fullName,
-          id : res.data.user.id
-        }
-        localStorage.setItem('userData', JSON.stringify(userData))
-        const userType = res.data.user.type === 'bride'? 'groom' : 'bride';
-        router.push(`/search?type=${userType}`);
-      } else if(res.data.code === 11000) {
-        setEmailAlreadyRegistered(true)
-        toast.error('Email already exists');
+    const formData = {...data, userId: userData.id}
+    console.log(formData);
+    axios.post(CREATE_PROFILE, formData).then(res => {
+      if(res.data.type === 'success') {
+        router.push('/profile/'+userData.id);
+      } else {
+        toast.error(res.data.message);
       }
-    }).catch(function(err){
-      console.log(err)
+    }).catch(err => {
+      console.log(err.response)
     })
-  }
-
-  const notifySuccess = (msg) => {
-    toast.success(msg);
   }
 
   return  (
@@ -66,71 +54,7 @@ const CreateProfile:FC = () => {
         </div>
       </div>
       <div className="row">
-        <div className="col-lg-4 form-section">
-          <h4 className="mb-3 section-heading">Required fields</h4>
-          <div className="mb-3">
-            <label htmlFor="bride">Type*</label>
-            <select id="bride" className="select-input" {...register('type', {required: true})}>
-              <option value="">Select</option>
-              <option value="bride">Bride</option>
-              <option value="groom">Groom</option>
-            </select>
-            { errors.type &&
-              <p className="text-danger"><small>Type required</small></p>
-            }
-          </div>
-          <div className="mb-3">
-            <label htmlFor="full-name">Full Name*</label>
-            <input type="text" id="full-name" {...register('fullName', {required: true})} className="form-control" />
-          </div>
-          <div className="mb-3">
-            <label htmlFor="email">Email*</label>
-            <input 
-              type="text" 
-              id="email" 
-              name="email" 
-              {...register('email', { 
-                required: true, 
-                pattern: /^(([^\s"(),.:;<>@[\\\]]+(\.[^\s"(),.:;<>@[\\\]]+)*)|(".+"))@((\[(?:\d{1,3}\.){3}\d{1,3}])|(([\dA-Za-z-]+\.)+[A-Za-z]{2,}))$/})} 
-              className="form-control" />
-            { errors.email &&
-              <p className="text-danger"><small>Invalid Email</small></p>
-            }
-            { emailAlreadyRegistered &&
-              <p className="small text-danger">
-                <small>Email already Registered try <Link href="/forgot-password">Forgot Password</Link></small>
-              </p>
-            }
-          </div>
-          <div className="mb-3">
-            <label htmlFor="password">Password*</label>
-            <input 
-              type="password" 
-              id="password" 
-              name="password"
-              className="form-control" 
-              {...register('password', { required: true, pattern: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/ })} />
-              {errors.password && (
-                <div className="text-danger mt-2">
-                  <ul className="text-danger small">
-                    <li><small>Must be 8 characters long</small></li>
-                    <li><small>Must be alpha numberic</small></li>
-                  </ul>
-                </div>
-              )}
-          </div>
-          <div className="mb-3">
-            <label htmlFor="confirm-password">Confirm Password*</label>
-            <input type="password" id="confirm-password" name="confirmPassword" {...register('confirmPassword', { required: true })} className="form-control" />
-            { errors.confirmPassword &&
-              <p className="text-danger"><small>Confirm Password required</small></p>
-            }
-            { confirmPasswordInvalid &&
-              <p className="text-danger"><small>Mismatch with password</small></p>
-            }
-          </div>
-        </div>
-        <div className="col-lg-4 form-section">
+        <div className="col-lg-4 white-box">
           <h4 className="mb-3 section-heading">Profession</h4>
           <div className="mb-3">
             <label htmlFor="profession">Profession Type</label>
@@ -145,7 +69,7 @@ const CreateProfile:FC = () => {
           { professionType === 'business' && 
             <div className="mb-3">
               <label htmlFor="business-details">Business Details</label>
-              <input type="text" className="form-control" {...register('businessDetails')} placeholder="Shop, Trading, Factory" />
+              <textarea rows={5} className="form-control" {...register('businessDetails')} placeholder="Shop, Trading, Factory"></textarea>
             </div>
           }
           { professionType === 'job' &&
@@ -162,7 +86,7 @@ const CreateProfile:FC = () => {
               </div>
               <div className="mb-3">
                 <label htmlFor="business-details">Business Details</label>
-                <input type="text" className="form-control" {...register('businessDetails')} name="businessDetails" placeholder="Shop, Trading, Factory" />
+                <textarea rows={5} className="form-control" {...register('businessDetails')} name="businessDetails" placeholder="Shop, Trading, Factory"></textarea>
               </div>
             </>
           }
@@ -170,23 +94,6 @@ const CreateProfile:FC = () => {
             <label htmlFor="profession">Income per month</label>
             <input type="text" className="form-control" {...register('income')} name="income" placeholder="100000-150000" />
           </div>
-          <div className="mb-3">
-            <label htmlFor="religion">Religion</label>
-            <select className="select-input" {...register('religion')} onChange={(e) => setReligion(e.target.value)}>
-              <option value="">Select</option>
-              { RELIGIONS.map((religion, index) => {
-                return(
-                  <option value={religion} key={index}>{religion}</option>
-                )
-              })}
-            </select>
-          </div>
-          { religion === 'muslim' &&
-            <div className="mb-3">
-              <label htmlFor="sub-religion">Sub Religion</label>
-              <input type="text" id="sub-religion" placeholder="Sunni, Shia, other..." className="form-control" {...register('subReligion')} />
-            </div>
-          }
           <div className="mb-3">
             <label htmlFor="contact-no">Contact Number</label>
             <input type="text" {...register('contactNo')} className="form-control" placeholder="0300-1234567" />
@@ -202,8 +109,19 @@ const CreateProfile:FC = () => {
                 })}
             </select>
           </div>
+          <div className="mb-3">
+            <label htmlFor="mother-language">Mother Language</label>
+            <select id="mother-language" {...register('motherLanguage')} className="select-input">
+              <option value="">Select</option>
+              { ORIGIN.map((origin, index) => {
+                return(
+                  <option value={origin} key={index}>{origin}</option>
+                )
+              })}
+            </select>
+          </div>
         </div>
-        <div className="col-lg-4 form-section">
+        <div className="col-lg-4 white-box">
           <h4 className="mb-3 section-heading">Education</h4>
           <div className="mb-3">
             <label htmlFor="degree-level">Degree Level</label>
@@ -247,30 +165,27 @@ const CreateProfile:FC = () => {
               <input id="institute" className="form-control" {...register('institute')} name="institute" placeholder="Board/Uni name" />
             </div>
           }
-          <h4 className="mb-3 section-heading">Location</h4>
           <div className="mb-3">
-            <label htmlFor="country">Country</label>
-            <select id="country" {...register('country')} className="select-input">
-              <option value="">Select</option>
-              <option value="pakistan">Pakistan</option>
-              <option value="uk">UK</option>
-              <option value="usa">USA</option>
-              <option value="saudi-arabia">Saudi Arabia</option>
-            </select>
+            <label htmlFor="degree-year">Degree Year</label>
+            <input id="degree-year" className="form-control" {...register('degreeYear')} placeholder="2000, 2005" />
           </div>
           <div className="mb-3">
-            <label htmlFor="city">City</label>
-            <select name="city" {...register('city')} className="select-input">
+            <label htmlFor="religion">Religion</label>
+            <select className="select-input" {...register('religion')} onChange={(e) => setReligion(e.target.value)}>
               <option value="">Select</option>
-              { CITIES.map((city, index) => {
-                return (
-                  <option value={city} key={index}>{city}</option>
+              { RELIGIONS.map((religion, index) => {
+                return(
+                  <option value={religion} key={index}>{religion}</option>
                 )
               })}
             </select>
           </div>
+          <div className="mb-3">
+            <label htmlFor="sub-religion">Sub Religion</label>
+            <input type="text" id="sub-religion" placeholder="Sunni, Shia, Catholic..." className="form-control" {...register('subReligion')} />
+          </div>
         </div>
-        <div className="col-lg-4 form-section">
+        <div className="col-lg-4 white-box">
           <h4 className="mb-3 section-heading">Body</h4>
           <div className="mb-3">
             <label htmlFor="age">Age</label>
@@ -334,22 +249,186 @@ const CreateProfile:FC = () => {
             </div>
           </div>
           <div className="mb-3">
-            <label htmlFor="mother-language">Mother Language</label>
-            <select id="mother-language" {...register('motherLanguage')} className="select-input">
+            <label htmlFor="weight">Hairs or Bald</label>
+            <select id="inch" {...register('headType')} className="select-input">
               <option value="">Select</option>
-              { ORIGIN.map((origin, index) => {
-                return(
-                  <option value={origin} key={index}>{origin}</option>
+              <option value="hairs">Hairs</option>
+              <option value="bald">Bald</option>
+            </select>
+          </div>
+        </div>
+        <div className="col-lg-4 white-box">
+          <h4 className="mb-3 section-heading">Current Address</h4>
+          <div className="mb-3">
+            <label htmlFor="country">Country</label>
+            <select id="country" {...register('currentAddessCountry')} className="select-input">
+              <option value="">Select</option>
+              <option value="pakistan">Pakistan</option>
+              <option value="uk">UK</option>
+              <option value="usa">USA</option>
+              <option value="saudi-arabia">Saudi Arabia</option>
+            </select>
+          </div>
+          <div className="mb-3">
+            <label htmlFor="city">City</label>
+            <select name="city" {...register('currentAddessCity')} className="select-input">
+              <option value="">Select</option>
+              { CITIES.map((city, index) => {
+                return (
+                  <option value={city} key={index}>{city}</option>
                 )
               })}
             </select>
           </div>
-        </div>
-        <div className="col-lg-4 form-section">
-          <h4 className="mb-3 section-heading">Misc</h4>
           <div className="mb-3">
-            <label htmlFor="status">Status</label>
-            <select id="status" {...register('status')} onChange={(e) => setStatus(e.target.value)} className="select-input">
+            <label htmlFor="current-addess-area">Area</label>
+            <input id="current-addess-area" className="form-control" {...register('currentAddessArea')} placeholder="House, Street, Town" />
+          </div>
+          <h4 className="mb-3 section-heading">Permanent Address</h4>
+          <div className="mb-3">
+            <label htmlFor="country">Country</label>
+            <select id="country" {...register('permanentAddessCountry')} className="select-input">
+              <option value="">Select</option>
+              <option value="pakistan">Pakistan</option>
+              <option value="uk">UK</option>
+              <option value="usa">USA</option>
+              <option value="saudi-arabia">Saudi Arabia</option>
+            </select>
+          </div>
+          <div className="mb-3">
+            <label htmlFor="city">City</label>
+            <select name="city" {...register('permanentAddessCity')} className="select-input">
+              <option value="">Select</option>
+              { CITIES.map((city, index) => {
+                return (
+                  <option value={city} key={index}>{city}</option>
+                )
+              })}
+            </select>
+          </div>
+          <div className="mb-3">
+            <label htmlFor="current-addess-area">Area</label>
+            <input id="current-addess-area" className="form-control" {...register('permanentAddessArea')} placeholder="House, Street, Town" />
+          </div>
+        </div>
+        <div className="col-lg-4 white-box">
+          <h4 className="mb-3 section-heading">Family</h4>
+          <div className="mb-3">
+            <label htmlFor="father">Father Alive?</label>
+            <select id="father" {...register('father')} className="select-input">
+              <option value="">Select</option>
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+            </select>
+          </div>
+          <div className="mb-3">
+            <label htmlFor="mother">Mother Alive?</label>
+            <select id="mother" {...register('mother')} className="select-input">
+              <option value="">Select</option>
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+            </select>
+          </div>
+          <div className="mb-3">
+            <label htmlFor="sisters">Total Sisters</label>
+            <select className='select-input' {...register('sisters')}>
+              <option value="">Select</option>
+              <option value="0">0</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+              <option value="11">11</option>
+              <option value="12">12</option>
+            </select>
+          </div>
+          <div className="mb-3">
+            <label htmlFor="married-sisters">Married Sisters</label>
+            <select className='select-input' {...register('marriedSisters')}>
+              <option value="">Select</option>
+              <option value="0">0</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+              <option value="11">11</option>
+              <option value="12">12</option>
+            </select>
+          </div>
+          <div className="mb-3">
+            <label htmlFor="brothers">Total Brothers</label>
+            <select className='select-input' {...register('brothers')}>
+              <option value="">Select</option>
+              <option value="0">0</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+              <option value="11">11</option>
+              <option value="12">12</option>
+            </select>
+          </div>
+          <div className="mb-3">
+            <label htmlFor="married-brothers">Married Brothers</label>
+            <select className='select-input' {...register('marriedBrothers')}>
+              <option value="">Select</option>
+              <option value="0">0</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+              <option value="11">11</option>
+              <option value="12">12</option>
+            </select>
+          </div>
+          <div className="mb-3">
+            <label htmlFor="sibling-number">Your number in siblings</label>
+            <select className='select-input' {...register('siblingNumber')}>
+              <option value="">Select</option>
+              <option value="1">1st</option>
+              <option value="2">2nd</option>
+              <option value="3">3rd</option>
+              <option value="4">4th</option>
+              <option value="5">5th</option>
+              <option value="6">6th</option>
+              <option value="7">7th</option>
+              <option value="8">8th</option>
+              <option value="9">9th</option>
+              <option value="10">10th</option>
+              <option value="11">11th</option>
+              <option value="last">Last</option>
+            </select>
+          </div>
+        </div>
+        <div className="col-lg-4 white-box">
+          <h4 className="mb-3 section-heading">Others</h4>
+          <div className="mb-3">
+            <label htmlFor="status">Marital Status</label>
+            <select id="status" {...register('maritalStatus')} onChange={(e) => setStatus(e.target.value)} className="select-input">
               <option value="">Select</option>
               { Object.keys(STATUS).map((status, i) => {
                 return (
@@ -365,6 +444,7 @@ const CreateProfile:FC = () => {
                   <label>No. of Sons</label>
                   <select className='select-input' {...register('noOfSons')}>
                     <option value="">Select</option>
+                    <option value="0">0</option>
                     <option value="1">1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
@@ -383,6 +463,7 @@ const CreateProfile:FC = () => {
                   <label>No. of Daughters</label>
                   <select className='select-input' {...register('noOfDaughters')}>
                     <option value="">Select</option>
+                    <option value="0">0</option>
                     <option value="1">1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
@@ -407,6 +488,7 @@ const CreateProfile:FC = () => {
                   <label>No. of Sons</label>
                   <select className='select-input' {...register('noOfSons')}>
                     <option value="">Select</option>
+                    <option value="0">0</option>
                     <option value="1">1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
@@ -425,6 +507,7 @@ const CreateProfile:FC = () => {
                   <label>No. of Daughters</label>
                   <select className='select-input' {...register('noOfDaughters')}>
                     <option value="">Select</option>
+                    <option value="0">0</option>
                     <option value="1">1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
@@ -449,6 +532,7 @@ const CreateProfile:FC = () => {
                   <label>No. of Sons</label>
                   <select className='select-input' {...register('noOfSons')}>
                     <option value="">Select</option>
+                    <option value="0">0</option>
                     <option value="1">1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
@@ -467,6 +551,7 @@ const CreateProfile:FC = () => {
                   <label>No. of Daughters</label>
                   <select className='select-input' {...register('noOfDaughters')}>
                     <option value="">Select</option>
+                    <option value="0">0</option>
                     <option value="1">1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
@@ -488,8 +573,8 @@ const CreateProfile:FC = () => {
             <label htmlFor="disability">Disability</label>
             <select id="disability" {...register('disability')} onChange={(e) => setDisability(e.target.value)} className="select-input">
               <option value="">Select</option>
-              <option value="yes">Yes</option>
               <option value="no">No</option>
+              <option value="yes">Yes</option>
             </select>
           </div>
           {disability === 'yes' &&
@@ -497,10 +582,38 @@ const CreateProfile:FC = () => {
               <textarea rows={5} placeholder="Disability details" className="form-control"></textarea>
             </div>
           }
+          <div className="mb-3">
+            <label htmlFor="smoker">Do you smoke?</label>
+            <select id="smoker" {...register('smoker')} className="select-input">
+              <option value="">Select</option>
+              <option value="no">No</option>
+              <option value="yes">Yes</option>
+            </select>
+          </div>
+          <div className="mb-3">
+            <label htmlFor="drinker">Do you drink?</label>
+            <select id="drinker" {...register('drinker')} className="select-input">
+              <option value="">Select</option>
+              <option value="no">No</option>
+              <option value="yes">Yes</option>
+            </select>
+          </div>
+          <div className="mb-3">
+            <label htmlFor="child-producer">Are you able to produce child?</label>
+            <select id="child-producer" {...register('childProducer')} className="select-input">
+              <option value="">Select</option>
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+            </select>
+          </div>
+          <div className="mb-3">
+            <label htmlFor="requirements">Notes for your partner</label>
+            <textarea className="form-control" {...register('requirements')} placeholder="should be caring..." rows={8}></textarea>
+          </div>
         </div>
       </div>
       <div className="col-lg-12 text-end mt-3 mb-3 p-0">
-        <button type="submit" className="btn btn-lg btn-primary bg-pink">Save</button>
+        <button type="submit" className="btn btn-lg btn-primary bg-pink">Create Profile</button>
       </div>
       <ToastContainer />
     </form>

@@ -1,10 +1,11 @@
-@import "./settings";
+@import "./variables";
 body {
   font-family: $base-font;
   font-size: 16px;
   line-height: 21px;
   height: 100vh;
   margin: 0;
+  background-color: $body-bg;
 }
 #__next {
   height: 100vh;
@@ -123,10 +124,11 @@ body {
     }
   }
 }
-.form-section {
+.white-box {
   padding: 20px 40px;
-  -webkit-box-shadow: inset 0 0 10px .5px #EBEBEB;
-  box-shadow: inset 0 0 10px .5px #EBEBEB;
+  border: 1px solid $border-color;
+  background-color: $white-bg;
+  border-radius: 10px;
 }
 .bg-pink {
   background: $color-pink !important;
@@ -189,11 +191,19 @@ body {
     }
   }
 }
+.profile-form {
+  label {
+    color: darkcyan;
+  }
+}
 .color-grey {
   color: #ccc;
 }
 .list-fav a:hover {
   color: red;
+}
+.text-sm {
+  font-size: 14px;
 }
 .footer-wrap {
   background-color: $color-pink;

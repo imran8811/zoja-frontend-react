@@ -1,0 +1,14 @@
+@font-face {
+  font-family: 'open_sansregular';
+  src: url('/assets/fonts/opensans-regular-webfont.woff2') format('woff2'),
+       url('/assets/fonts/opensans-regular-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+
+}
+$wrapper-max-width : 1920px;
+$base-font : 'open_sansregular';
+$color-pink : #ef398c;
+$body-bg : #f0f2f5;
+$border-color: #ccc;
+$white-bg: #fff;

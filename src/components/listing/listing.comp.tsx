@@ -190,8 +190,8 @@ const Listing: FC = () => {
           <div className="mb-3">
             <strong className="d-block">Type</strong>
             <select onChange={(e) => setFiltersData('type', e)} className="select-input">
-              <option selected={type === 'bride'} value="bride">Bride</option>
-              <option selected={type === 'groom'} value="groom">Groom</option>
+              <option value="bride">Bride</option>
+              <option value="groom">Groom</option>
             </select>
           </div>
           <div className="mb-3">
@@ -356,9 +356,9 @@ const Listing: FC = () => {
                     <span>Status</span>
                     <span>
                       {
-                        (list.status === 'divorcedWithChildren'? 'Divorced with children' : list.status) ||
-                        (list.status === 'separatedWithChildren'? 'Separated with children' : list.status) ||
-                        (list.status === 'marriedWithChildren'? 'Married with children' : list.status)
+                        (list.maritalStatus === 'divorcedWithChildren'? 'Divorced with children' : list.maritalStatus) ||
+                        (list.maritalStatus === 'separatedWithChildren'? 'Separated with children' : list.maritalStatus) ||
+                        (list.maritalStatus === 'marriedWithChildren'? 'Married with children' : list.maritalStatus)
                       }
                     </span>
                   </li>
@@ -378,11 +378,11 @@ const Listing: FC = () => {
                   }
                   <li>
                     <span>Religion</span>
-                    <span>{list.religion} {list.subReligion} </span>
+                    <span>{list.subReligion}, {list.religion} </span>
                   </li>
                   <li>
                     <span>City</span>
-                    <span>{list.city}</span>
+                    <span>{list.currentAddessCity}</span>
                   </li>
                   <li>
                     <span>Mother Tongue</span>

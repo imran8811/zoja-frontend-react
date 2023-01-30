@@ -1,6 +1,8 @@
-@import "./bootstrap";
-@import "./settings";
+@import "./bootstrap-5.2.3/bootstrap";
+@import "./variables";
 @import "./fontawesome";
 @import "./fontawesome/solid.scss";
+
 @import "./membership";
+@import "./profile";
 @import "./custom";

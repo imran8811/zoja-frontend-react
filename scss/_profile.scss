@@ -1,0 +1,25 @@
+.user-profile-view {
+  .outer-wrap {
+    background-color: $white-bg;
+    h2 {
+      border-bottom: 1px solid $border-color;
+      margin-bottom: 20px;
+    }
+    .profile-box{
+      margin: 0;
+      padding: 0 20px;
+      li {
+        list-style: none;
+        margin-bottom: 10px;
+        span {
+          display: inline-block;
+          width: 65%;
+          text-transform: capitalize;
+          &:first-child {
+            width: 35%;
+          }
+        }
+      }
+    }
+  }
+}

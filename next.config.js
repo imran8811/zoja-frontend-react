@@ -4,7 +4,7 @@ module.exports = {
   reactStrictMode: true,
   trailingSlash : true,
   sassOptions: {
-    includePaths: [path.join(process.cwd(), 'src', 'scss')],
+    includePaths: [path.join(process.cwd(), 'scss')],
   },
   env:{
     GOOGLE_ANALYTICS:process.env.GOOGLE_ANALYTICS,

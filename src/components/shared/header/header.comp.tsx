@@ -4,9 +4,9 @@ import Link from 'next/link';
 import axios from "axios";
 import useState from 'react-usestateref';
 
-import userLogout from '../../authentication/logout.comp';
 import { useRouter } from "next/dist/client/router";
 import { getSession } from "../../../utilities";
+import { USER_LOGOUT } from "../../../endpoints";
 
 const Header: FC = () => {
   type userData = {
@@ -17,8 +17,8 @@ const Header: FC = () => {
   const router = useRouter()
   const { query } = useRouter();
   const [userData, setUserData] = useState<userData>()
-  const [dropdown, setOpenDropdown, dropdownRef] = useState(false)
   const [loggedIn, setLoggedIn, loggedInRef] = useState<Boolean>(false);
+  const [dropdown, setOpenDropdown, dropdownRef] = useState(false)
   const { action } = query;
 
   useEffect(() => {
@@ -26,13 +26,19 @@ const Header: FC = () => {
     setUserData(JSON.parse(localStorage.getItem('userData')))
   }, [])
 
-  const usLogout = async(e) => {
+  const userLogout = async(e) => {
     e.preventDefault();
-    if(await userLogout()){
-      setLoggedIn(false)
-      setOpenDropdown(false)
-      router.push('/')
-    }
+    await axios.post(USER_LOGOUT).then((res) => {
+      if(res.data.type === 'success') {
+        localStorage.removeItem('next')
+        localStorage.removeItem('userData')
+        setLoggedIn(false)
+        setOpenDropdown(false)
+        router.push('/')
+      }
+    }, (err) => {
+      console.log(err);    
+    })
   }
 
   const openDropdown = (e) => {
@@ -55,7 +61,7 @@ const Header: FC = () => {
             {!loggedInRef.current &&
               <>
                 <li><Link href="/login" >Login</Link></li>
-                <li><Link href="/create-profile">Create Profile</Link></li>
+                <li><Link href="/register">Register</Link></li>
                 <li><Link href="/membership">Membership</Link></li>
               </>
             }
@@ -69,10 +75,15 @@ const Header: FC = () => {
                   </a>
                   { dropdownRef.current &&
                     <ul className="profile-dropdown">
-                      <li><Link href="/profile">My Profile</Link></li>
+                      {userData.profileScore > 0 &&
+                        <li><Link href={'/profile/'+userData.id}>View Profile</Link></li>
+                      }
+                      {userData.profileScore == 0 &&
+                        <li><Link href="/create-profile">Create Profile</Link></li>
+                      }
                       <li><Link href="/settings">Settings</Link></li>
                       <li><Link href="/membership">Membership</Link></li>
-                      <li><a href="#" onClick={(e) => {usLogout(e)}}>Logout</a></li>
+                      <li><a href="#" onClick={(e) => {userLogout(e)}}>Logout</a></li>
                     </ul>
                   }
                 </li>
