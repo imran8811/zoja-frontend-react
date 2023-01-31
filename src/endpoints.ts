@@ -1,6 +1,5 @@
-const baseRoute = 'http://localhost:8000/api';
-const sanctumBaseRoute = 'http://localhost:8000';
-// const baseRoute = 'https://zoja.pk/api';
+// const baseRoute = 'http://localhost:8000/api';
+const baseRoute = 'https://zoja.pk/api';
 
 //authentication
 export const REGISTER_USER = baseRoute+'/user/register';
