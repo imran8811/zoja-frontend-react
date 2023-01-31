@@ -32,7 +32,8 @@ const RegisterUser:FC = () => {
         const userData = {
           session : true,
           fullName : res.data.user.fullName,
-          id : res.data.user.id
+          id : res.data.user.id,
+          profileScore: 0
         }
         localStorage.setItem('userData', JSON.stringify(userData))
         const userType = res.data.user.type === 'bride'? 'groom' : 'bride';
@@ -47,17 +48,6 @@ const RegisterUser:FC = () => {
     <div className="mt-5 mb-5 white-box">
       <h2 className="mb-5 text-pink section-heading text-center">Register New User</h2>
       <form method="POST" className="profile-form" onSubmit={handleSubmit(onSubmit)}>
-        <div className="mb-3">
-          <label htmlFor="bride">Type*</label>
-          <select id="bride" className="select-input" {...register('type', {required: true})}>
-            <option value="">Select</option>
-            <option value="bride">Bride</option>
-            <option value="groom">Groom</option>
-          </select>
-          { errors.type &&
-            <p className="text-danger"><small>Type required</small></p>
-          }
-        </div>
         <div className="mb-3">
           <label htmlFor="full-name">Full Name*</label>
           <input type="text" id="full-name" {...register('fullName', {required: true})} className="form-control" />

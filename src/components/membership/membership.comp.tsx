@@ -29,52 +29,60 @@ const Plans:FC = () => {
   }, [])
 
   return(
-    <div className='page-membership row'>
-      <div className='col-6'>
-        <h1>How to get membership</h1>
-        <ul>
-          { !session &&
-            <li>
-              <strong><Link href="/login">Login</Link></strong>
-              <span>  or  </span>
-              <strong><Link href="/create-profile">Create new profile</Link></strong>
-            </li>
-          }
-          { session && profileScore && profileScore < 90 &&
-            <li>
-              <Link href="/profile">complete your profile</Link>
-              <small>Profile score should be greater than 90 to become a member</small>
-            </li>
-          }
-          <li> 
-            <p>Pay <strong className='h2'>5000 / year</strong> membership fee through below payment methods</p>
-          </li>
-        </ul>
+    <div className='page-membership row mt-5 mb-5'>
+      <div className='col-6 white-box'>
+        <h1>Membership Plans</h1>
+        <div className='mb-3 white-box'>
+          <h3>Free</h3>
+          <ul>
+            <li>3 profiles views per day</li>
+          </ul>  
+        </div>
+        <div className='mb-3 white-box'>
+          <h3>Silver PKR 5000/year</h3>
+          <ul>
+            <li>10 profiles views per day</li>
+          </ul>  
+        </div>
+        <div className='mb-3 white-box'>
+          <h3>Gold PKR 10000/year</h3>
+          <ul>
+            <li>30 profiles views per day</li>
+          </ul>  
+        </div>
+        <div className='mb-3 white-box'>
+          <h3>Diamond PKR 20000/year</h3>
+          <ul>
+            <li>Unimited profiles view</li>
+          </ul>  
+        </div>
+      </div>
+      <div className='col-6 white-box'>
+        <h1 className='text-center mb-5'>Payment Methods</h1>
         <div className='payment-methods'>
           <div className='mobile-account'>
-            <h2>To mobile account</h2>
             <ul className='row justify-content-between'>
-              <li className='col-5'>
+              <li className='col-5 text-center mb-5 white-box'>
                 <p><img src='/assets/images/jc-logo.jpg' alt='jazzcash logo' width="100" height="50" /></p>
                 <p>
                   <span>Muhammad Imran </span><br/>
                   <strong>0300-8811310</strong>
                 </p>
               </li>
-              <li className='col-5'>
+              <li className='col-5 text-center mb-5 white-box'>
                 <p><img src='/assets/images/easypaisa-logo.png' alt='jazzcash logo' width="100" height="60" /></p>
                 <p>
                   <span>Muhammad Imran </span><br/>
-                  <strong>0345-1234567</strong>
+                  <strong>0349-0825711</strong>
                 </p>
               </li>
             </ul>
           </div>
         </div>
         <div className='payment-methods'>
-          <div className='mobile-account'>
-            <h2>To bank account</h2>
-            <ul>
+          <div className='mobile-account text-center mb-3 white-box'>
+            <h2>Bank account</h2>
+            <ul className='text-left'>
               <li>
                 <p>Askari Bank</p>
                 <p>
@@ -93,16 +101,6 @@ const Plans:FC = () => {
             </ul>
           </div>
         </div>
-      </div>
-      <div className='col-6'>
-          <h1 className='text-center'>Membership fee <br /> <span className='highlight'>5000 / year</span></h1>
-          <div className='benefits'>
-            <p>Benefits for membership</p>
-            <ul>
-              <li>view contact info</li>
-              <li>Get support</li>
-            </ul>
-          </div>
       </div>
     </div>
   )

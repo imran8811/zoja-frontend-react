@@ -62,9 +62,9 @@ const Header: FC = () => {
               <>
                 <li><Link href="/login" >Login</Link></li>
                 <li><Link href="/register">Register</Link></li>
-                <li><Link href="/membership">Membership</Link></li>
               </>
             }
+            <li><Link href="/membership">Membership</Link></li>
             {loggedInRef.current && 
               <>
                 <li className="dropdown">
@@ -82,7 +82,6 @@ const Header: FC = () => {
                         <li><Link href="/create-profile">Create Profile</Link></li>
                       }
                       <li><Link href="/settings">Settings</Link></li>
-                      <li><Link href="/membership">Membership</Link></li>
                       <li><a href="#" onClick={(e) => {userLogout(e)}}>Logout</a></li>
                     </ul>
                   }

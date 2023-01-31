@@ -95,7 +95,7 @@ const Listing: FC = () => {
     e.preventDefault();
     console.log(session, membership)
     if(session) {
-      if(membership) {
+      if(membership != '0') {
         showContactNo(true)
       } else {
         confirmAlert({
@@ -312,7 +312,7 @@ const Listing: FC = () => {
               </select>
             </div>
           }
-          <div className="mb-3">
+          {/* <div className="mb-3">
             <strong className="d-block">Sub Religion</strong>
             <label htmlFor="sunni">
               <input type="radio" onChange={(e) => setFiltersData('sub_religion', e)} value="sunni" name="group2" id="sunni" /> Sunni
@@ -320,7 +320,7 @@ const Listing: FC = () => {
             <label htmlFor="shia">
               <input type="radio" onChange={(e) => setFiltersData('sub_religion', e)} value="shia" name="group2" id="shia" /> Shia
             </label>
-          </div>
+          </div> */}
         </form>
       </div>
       <div className="col-lg-10">

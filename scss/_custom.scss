@@ -84,6 +84,7 @@ body {
       }
     }
     .listing-details {
+      background-color: $white-bg;
       width: 80%;
       > ul {
         display: flex;
@@ -143,6 +144,7 @@ body {
   justify-content: flex-end;
   align-items: center;
   height: 100%;
+  text-decoration: none;
   > li {
     list-style: none;
     margin-left: 15px;
@@ -155,7 +157,6 @@ body {
        }
     }
     .profile-icon {
-      text-decoration: none;
       font-size: 15px;
       text-transform: capitalize;
     }
@@ -164,6 +165,7 @@ body {
       color: $color-pink;
       font-weight: bold;
       display: block;
+      text-decoration: none;
     }
     .profile-dropdown {
       position: absolute;

@@ -55,6 +55,17 @@ const CreateProfile:FC = () => {
       </div>
       <div className="row">
         <div className="col-lg-4 white-box">
+          <div className="mb-3">
+            <label htmlFor="bride">Type*</label>
+            <select id="bride" className="select-input" {...register('profileType', {required: true})}>
+              <option value="">Select</option>
+              <option value="bride">Bride</option>
+              <option value="groom">Groom</option>
+            </select>
+            { errors.profileType &&
+              <p className="text-danger"><small>Profile Type required</small></p>
+            }
+          </div>
           <h4 className="mb-3 section-heading">Profession</h4>
           <div className="mb-3">
             <label htmlFor="profession">Profession Type</label>

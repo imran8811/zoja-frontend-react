@@ -16855,22 +16855,10 @@ readers do not read off random characters that represent icons */
   font-weight: 900;
 }
 
-.page-membership {
-  margin-top: 50px;
-}
-.page-membership ul {
+.payment-methods ul {
   list-style: none;
-  margin: 0 0 50px;
+  margin: 0;
   padding: 0;
-}
-.page-membership a {
-  text-decoration: none;
-}
-.page-membership .mobile-account li {
-  text-align: center;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  padding: 20px;
 }
 
 .user-profile-view .outer-wrap {
@@ -16997,6 +16985,7 @@ body {
   text-decoration: none;
 }
 .listing-wrap .list-item .listing-details {
+  background-color: #fff;
   width: 80%;
 }
 .listing-wrap .list-item .listing-details > ul {
@@ -17060,6 +17049,7 @@ body {
   justify-content: flex-end;
   align-items: center;
   height: 100%;
+  text-decoration: none;
 }
 .nav-menu > li {
   list-style: none;
@@ -17074,7 +17064,6 @@ body {
   list-style: none;
 }
 .nav-menu > li .profile-icon {
-  text-decoration: none;
   font-size: 15px;
   text-transform: capitalize;
 }
@@ -17083,6 +17072,7 @@ body {
   color: #ef398c;
   font-weight: bold;
   display: block;
+  text-decoration: none;
 }
 .nav-menu > li .profile-dropdown {
   position: absolute;
