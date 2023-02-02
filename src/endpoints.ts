@@ -1,6 +1,6 @@
 // const baseRoute = 'http://localhost:8000/api';
 // const baseRoute = 'https://zoja.pk/api';
-const baseRoute = 'http://api.zoja.pk';
+const baseRoute = 'https://api.zoja.pk';
 
 //authentication
 export const REGISTER_USER = baseRoute+'/user/register';
