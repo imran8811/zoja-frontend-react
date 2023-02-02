@@ -20,6 +20,17 @@ const Login:FC = () => {
       email : e.target.email.value,
       password : e.target.password.value
     }
+    function readCookie(name) {
+      var nameEQ = name + "=";
+      var ca = document.cookie.split(';');
+      for (var i = 0; i < ca.length; i++) {
+          var c = ca[i];
+          while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+          if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+     }
+      return null;
+    }
+    const csrfToken = decodeURIComponent(readCookie('CSRF-TOKEN'))
     await axios({
       method: 'post',
       url: USER_LOGIN,
