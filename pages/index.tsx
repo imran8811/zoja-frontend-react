@@ -16,14 +16,14 @@ export default function Home() {
       <Head>
         <title>{message.title}</title>
         <link rel="icon" type='image/png' href='/assets/images/favicon.png'></link>
-        <Script strategy="lazyOnload" src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS}`} />
+        <Script strategy="lazyOnload" src={`https://www.googletagmanager.com/gtag/js?id=G-F53X9ZE5TD`} />
         <Script strategy="lazyOnload">
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-            gtag('config', '${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS}', {
-            page_path: window.location.pathname,
+            gtag('config', 'G-F53X9ZE5TD', {
+              page_path: window.location.pathname,
             });
           `}
         </Script>
