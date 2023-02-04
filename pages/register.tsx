@@ -19,10 +19,7 @@ export default function userSignup() {
         <Header></Header>
         <div className="container">
           <div className="row">
-            <div className="col-lg-8"></div>
-            <div className="col-lg-4">
-              <RegisterUser></RegisterUser>
-            </div>
+            <RegisterUser></RegisterUser>
           </div>
         </div>
       </BaseLayout>
