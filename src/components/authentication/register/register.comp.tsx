@@ -1,9 +1,9 @@
-import React, { FC, useContext, useEffect } from "react";
+import React, { FC, useContext, useEffect, useRef } from "react";
 import useState from 'react-usestateref';
 import { useRouter } from "next/dist/client/router";
 import axios from "axios";
 import { useForm } from 'react-hook-form';
-import { ToastContainer, toast } from 'react-toastify';
+import { Toast } from "primereact/toast";
 import Link from 'next/link';
 // axios.default.credentials = true;
 
@@ -12,6 +12,7 @@ import { REGISTER_USER } from "../../../endpoints";
 import { validateEmail, validatePassword } from "../../../utilities";
 
 const RegisterUser:FC = () => {
+  const toast = useRef<Toast>(null);
   const router = useRouter();
   const { register, handleSubmit, getValues, watch, formState: { errors} } = useForm();
   const [invalidEmail, setInvalidEmail] = useState(false)
@@ -36,11 +37,14 @@ const RegisterUser:FC = () => {
           profileScore: 0
         }
         localStorage.setItem('userData', JSON.stringify(userData))
-        const userType = res.data.user.type === 'bride'? 'groom' : 'bride';
-        router.push(`/search?type=${userType}`);
+        const userType = res.data.user.type === 'female'? 'male' : 'female';
+        router.push(`/search?profileType=${userType}`);
       } 
     }, (err) => {
-      toast.error(err.response.data.message);
+      toast.current.show({
+        severity: "error",
+        detail: err.response.data.message,
+      });
     });
   }
 
@@ -55,10 +59,10 @@ const RegisterUser:FC = () => {
         <div className="mt-5 mb-5 white-box">
           <h2 className="mb-5 text-pink section-heading text-center">Register New User</h2>
           <form method="POST" className="profile-form" onSubmit={handleSubmit(onSubmit)}>
-            <div className="mb-3">
+            {/* <div className="mb-3">
               <label htmlFor="full-name">Full Name*</label>
               <input type="text" id="full-name" {...register('fullName', {required: true})} className="form-control" />
-            </div>
+            </div> */}
             <div className="mb-3">
               <label htmlFor="email">Email*</label>
               <input 
@@ -108,7 +112,6 @@ const RegisterUser:FC = () => {
             <div className="col-lg-12 text-end mt-3 mb-3 p-0">
               <button type="submit" className="btn btn-lg btn-primary bg-pink">Register</button>
             </div>
-            <ToastContainer />
           </form>
         </div>
       </div>

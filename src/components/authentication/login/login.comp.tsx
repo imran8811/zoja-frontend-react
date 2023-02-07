@@ -3,7 +3,6 @@ import { useRouter } from "next/dist/client/router";
 import axios from 'axios';
 
 import { USER_LOGIN } from "../../../endpoints";
-import { ToastContainer, toast } from "react-toastify";
 import Link from "next/link";
 axios.defaults.withCredentials = true;
 
@@ -58,7 +57,7 @@ const Login:FC = () => {
       }
     }).catch(err => {
       console.log(err.response.data.message);
-      if(err.response.data.errorType = 'user'){
+      if(err.response.data.errorType === 'user'){
         setUserError(err.response.data.message);
       } else {
         setPasswordError(err.response.data.message);
@@ -75,14 +74,14 @@ const Login:FC = () => {
           { userError &&
             <p className="text-danger text-sm">{userError}</p> 
           }
-          { passwordError &&
-            <p className="text-danger text-sm">{passwordError}</p> 
-          }
         </div>
-        <div className="mb-4">
+        <div className="mb-2">
           <label htmlFor="password">Password</label>
           <input type="password" id="password" className="form-control" />
         </div>
+        { passwordError &&
+          <p className="text-danger text-sm">{passwordError}</p> 
+        }
         <div className="mb-4">
           <Link href="/forgot-password">Forgot Password?</Link>
         </div>        
@@ -90,7 +89,6 @@ const Login:FC = () => {
           <button type="submit" className="btn btn-lg btn-primary bg-pink">Login</button>
         </div>
       </form>
-      <ToastContainer />
     </div>
   )
 }

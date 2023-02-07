@@ -1,10 +1,12 @@
-import 'swiper/swiper.min.css';
-import 'react-toastify/dist/ReactToastify.css';
-import '../public/assets/css/style.css';
-import 'react-confirm-alert/src/react-confirm-alert.css';
 import type { AppProps } from 'next/app';
 import store from '../src/store';
 import { Provider } from 'react-redux';
+
+import 'swiper/swiper.min.css';
+import "primereact/resources/themes/lara-light-indigo/theme.css";
+import "primereact/resources/primereact.min.css";  
+import "primeicons/primeicons.css";                 
+import '../public/assets/css/style.css';
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
   return (

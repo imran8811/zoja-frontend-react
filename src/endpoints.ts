@@ -1,17 +1,17 @@
 // const baseRoute = 'http://localhost:8000/api';
-// const baseRoute = 'https://zoja.pk/api';
 const baseRoute = 'https://pksoftsolutions.com/api/zoja';
 
 //authentication
 export const REGISTER_USER = baseRoute+'/user/register';
 export const USER_LOGIN = baseRoute+'/user/login';
-export const GET_USER = baseRoute+'/user/';
+export const GET_USER = baseRoute+'/user';
 export const USER_LOGOUT = baseRoute+'/user/logout';
-export const UPDATE_SETTINGS = baseRoute+'/user/settings';
-export const FORGOT_PASSWORD = baseRoute+'/user/forgot-password';
-export const RESET_PASSWORD = baseRoute+'/user/reset-password';
 export const CHECK_EMAIL_VALIDITY = baseRoute+'/user/check-email-validity';
 
+export const FORGOT_PASSWORD = baseRoute+'/user/forgot-password';
+export const RESET_PASSWORD = baseRoute+'/user/reset-password';
+export const UPDATE_PASSWORD = baseRoute+'/user/update-password';
+export const UPDATE_EMAIL = baseRoute+'/user/update-email';
 
 export const GET_PROFILE = baseRoute+'/profile';
 export const CREATE_PROFILE = baseRoute+'/profile/create';

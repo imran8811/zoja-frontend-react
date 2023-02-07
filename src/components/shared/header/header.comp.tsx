@@ -67,19 +67,19 @@ const Header: FC = () => {
             <li><Link href="/membership">Membership</Link></li>
             {loggedInRef.current && 
               <>
+                {userData.profileScore == 0 &&
+                  <li><Link href="/create-profile">Create Profile</Link></li>
+                }
                 <li className="dropdown">
                   <a onClick={(e) => openDropdown(e)} href="#" className="profile-icon">
                     {/* <i className="fas fa-meh-blank"></i> &nbsp; */}
-                    <b>{userData.fullName}</b> &nbsp;
+                    <i className="fa fa-user"></i> &nbsp;
                     <i className="fas fa-caret-down"></i>
                   </a>
                   { dropdownRef.current &&
                     <ul className="profile-dropdown">
                       {userData.profileScore > 0 &&
                         <li><Link href={'/profile/'+userData.id}>View Profile</Link></li>
-                      }
-                      {userData.profileScore == 0 &&
-                        <li><Link href="/create-profile">Create Profile</Link></li>
                       }
                       <li><Link href="/settings">Settings</Link></li>
                       <li><a href="#" onClick={(e) => {userLogout(e)}}>Logout</a></li>

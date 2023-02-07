@@ -24,7 +24,7 @@ const HomeBanner: FC = () => {
               router.push({
                 pathname: '/search',
                 query: {
-                  type: 'bride'
+                  profileType: 'female'
                 }
               })
             }}><strong>Search Bride</strong></button>
@@ -35,7 +35,7 @@ const HomeBanner: FC = () => {
               router.push({
                 pathname: '/search', 
                 query: {
-                  type: 'groom'
+                  profileType: 'male'
                 }
               })
             }}><strong>Search Groom</strong></button>

@@ -4,9 +4,8 @@ import React, { FC, useEffect } from "react";
 import useState from 'react-usestateref';
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/dist/client/router";
-import { ToastContainer, toast } from 'react-toastify';
-import { confirmAlert } from 'react-confirm-alert';
 import axios from "axios";
+import { ConfirmDialog } from "primereact/confirmdialog";
 
 import { SEARCH, ADD_FAVOURITE, DELETE_FAVOURITE } from "../../endpoints";
 import { AGE_LIMIT, POPULAR_CASTS, ORIGIN, RELIGIONS, CITIES, STATUS, COUNTRIES } from "../../constants";
@@ -16,6 +15,7 @@ import Link from "next/link";
 const Listing: FC = () => {
   const router  = useRouter();
   const { query, isReady }  = useRouter();
+  const [visible, setVisible] = useState()
   const [filters, setFilters] = useState()
   const [listing, setListing] = useState([])
   const [noRecordFound, setNoRecordFound, noRecordFoundRef] = useState(false)
@@ -30,7 +30,7 @@ const Listing: FC = () => {
   const [favClass, setFavClass] = useState('color-grey');
   const [contactNo, showContactNo, contactNoRef] = useState(false);
 
-  const { type, ageFrom, ageTo, caste, religion, sub_religion, origin } = query
+  const { profileType, ageFrom, ageTo, caste, religion, sub_religion, origin } = query
   const { session, membership } = userDataRef.current;
   
   useEffect(() => {
@@ -45,7 +45,7 @@ const Listing: FC = () => {
 
   const getProfiles = () => {
     axios.post(SEARCH, {
-      type: type
+      profileType: profileType
     }).then((res) => {
       if(res.data.length > 0) {
         setListing(res.data);
@@ -98,33 +98,25 @@ const Listing: FC = () => {
       if(membership != '0') {
         showContactNo(true)
       } else {
-        confirmAlert({
-          title: '',
-          message: 'Only paid members can see contact details',
-          buttons: [
-            {
-              label: 'Get Membership',
-              onClick: () => {
-                router.push('/membership')
-              }
-            }
-          ]
-        });
+        <ConfirmDialog 
+          visible={visible} 
+          onHide={() => setVisible(false)} 
+          message="Only paid members can see contact details" 
+          header="Confirmation" 
+          icon="pi pi-exclamation-triangle" 
+          accept={() => router.push('/membership')} 
+          reject={() => {setVisible(false)}} />
       }
     } else {
-      localStorage.setItem('next', window.location.pathname+window.location.search)
-      confirmAlert({
-        title: '',
-        message: 'Login and membership required',
-        buttons: [
-          {
-            label: 'Login',
-            onClick: () => {
-              router.push('/login')
-            }
-          }
-        ]
-      });
+      localStorage.setItem('next', window.location.pathname+window.location.search);
+      <ConfirmDialog 
+          visible={visible} 
+          onHide={() => setVisible(false)} 
+          message="Login and membership required" 
+          header="Confirmation" 
+          icon="pi pi-exclamation-triangle"
+          accept={() => router.push('/login')} 
+          reject={() => {setVisible(false)}} />
     }
   }
 
@@ -141,7 +133,7 @@ const Listing: FC = () => {
         e.target.classList.add('text-danger');
         axios.post(ADD_FAVOURITE, data).then(res => {
           if(res.data.type !== 'success') {
-            toast.error('Something went wrong')
+            // toast.error('Something went wrong')
             e.target.classList.remove('text-danger');
             e.target.classList.add('color-grey');
           }
@@ -164,7 +156,7 @@ const Listing: FC = () => {
               localStorage.setItem('userData', JSON.stringify(userData))
             }
           } else {
-            toast.error('Something went wrong')
+            // toast.error('Something went wrong')
             e.target.classList.remove('color-grey');
             e.target.classList.add('text-danger');
           }
@@ -373,7 +365,7 @@ const Listing: FC = () => {
                   {list.professionType != 'none' &&
                     <li>
                       <span>Job Title</span>
-                      <span>{list.jobTitle}</span>
+                      <span>{list.professionTitle}</span>
                     </li>
                   }
                   <li>
@@ -431,7 +423,6 @@ const Listing: FC = () => {
           }
         </div>
       </div>
-      <ToastContainer />
     </>
   )
 }

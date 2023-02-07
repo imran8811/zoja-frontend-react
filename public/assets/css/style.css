@@ -16861,28 +16861,30 @@ readers do not read off random characters that represent icons */
   padding: 0;
 }
 
-.user-profile-view .outer-wrap {
-  background-color: #fff;
+.user-profile-view .white-box {
+  min-height: 330px;
 }
-.user-profile-view .outer-wrap h2, .user-profile-view .outer-wrap .h2 {
+.user-profile-view .white-box h2, .user-profile-view .white-box .h2 {
   border-bottom: 1px solid #ccc;
   margin-bottom: 20px;
+  padding-bottom: 5px;
 }
-.user-profile-view .outer-wrap .profile-box {
+.user-profile-view .white-box .profile-box {
   margin: 0;
-  padding: 0 20px;
+  padding: 0;
 }
-.user-profile-view .outer-wrap .profile-box li {
+.user-profile-view .white-box .profile-box li {
   list-style: none;
   margin-bottom: 10px;
 }
-.user-profile-view .outer-wrap .profile-box li span {
+.user-profile-view .white-box .profile-box li span {
   display: inline-block;
   width: 65%;
   text-transform: capitalize;
 }
-.user-profile-view .outer-wrap .profile-box li span:first-child {
+.user-profile-view .white-box .profile-box li span:first-child {
   width: 35%;
+  vertical-align: top;
 }
 
 @font-face {
@@ -17041,6 +17043,15 @@ body {
   color: #ef398c;
 }
 
+.fs-25 {
+  font-size: 25px;
+  line-height: 30px;
+}
+
+.text-right {
+  text-align: right;
+}
+
 .nav-menu {
   margin: 0;
   padding: 0;
@@ -17111,6 +17122,10 @@ body {
 
 .text-sm {
   font-size: 14px;
+}
+
+.cursor-pointer {
+  cursor: pointer;
 }
 
 .footer-wrap {
