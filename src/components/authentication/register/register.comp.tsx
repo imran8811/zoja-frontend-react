@@ -1,4 +1,4 @@
-import React, { FC, useContext, useEffect, useRef } from "react";
+import React, { FC, Fragment, useContext, useEffect, useRef } from "react";
 import useState from 'react-usestateref';
 import { useRouter } from "next/dist/client/router";
 import axios from "axios";
@@ -49,12 +49,8 @@ const RegisterUser:FC = () => {
   }
 
   return  (
-    <>
-      <div className="col-lg-8">
-        <div className="mt-5 mb-5 white-box">
-          <h2 className="mb-5 text-pink section-heading text-center">Success Stories</h2>
-        </div>
-      </div>
+    <div className="row justify-content-center">
+      <div className="col-lg-8"></div>
       <div className="col-lg-4">
         <div className="mt-5 mb-5 white-box">
           <h2 className="mb-5 text-pink section-heading text-center">Register New User</h2>
@@ -115,7 +111,8 @@ const RegisterUser:FC = () => {
           </form>
         </div>
       </div>
-    </>
+      <Toast ref={toast} />
+    </div>
   )
 }
 

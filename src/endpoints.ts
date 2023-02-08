@@ -1,4 +1,4 @@
-// const baseRoute = 'http://localhost:8000/api';
+// const baseRoute = 'http://localhost:8000';
 const baseRoute = 'https://pksoftsolutions.com/api/zoja';
 
 //authentication
