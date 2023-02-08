@@ -320,18 +320,18 @@ const Listing: FC = () => {
           {listing.length > 0 && listing.map((list, index) => {
           return(
             <div className="list-item" key={index}>
-              <div className="profile-pic">
-                <div className={!userData.session? 'blur-element' : 'image-wrap'}>
+              <div className="profile-pic cursor-pointer" onClick={() => router.push('/profile'+'/'+list.userId)}>
+                <div className='image-wrap'>
                   <img src="/assets/images/profile-pic.jfif" alt="profile picture" />
                 </div>
-                {!userData.session &&
+                {/* {!userData.session &&
                   <p className="login-text" onClick={routeToLogin}>
                     <i className="fa fa-user-lock"></i>&nbsp;&nbsp;Login
                   </p>
-                }
+                } */}
               </div>
               <div className="listing-details">
-                <ul>
+                <ul className="cursor-pointer" onClick={() => router.push('/profile'+'/'+list.userId)}>
                   <li>
                     <span>Name:</span>
                     <span>{list.fullName}</span>

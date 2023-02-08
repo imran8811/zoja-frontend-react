@@ -12,36 +12,36 @@ import { useRouter } from 'next/dist/client/router';
 
 const Profile:FC = () => {
   const router = useRouter();
-  const { query } = useRouter();
+  // const { query, asPath } = useRouter();
   const { register, handleSubmit, getValues, setValue, watch, formState: { errors} } = useForm();
-  const { action } = query;
+  const { id } = router.query;
   const toast = useRef<Toast>(null);
 
-  type userData = {
+  type userDataType = {
     id : '',
     name : '',
     profileRank : 0
   }
-
   const [professionType, setProfessionType] = useState('Job')
   const [degreeLevel, setDegreeLevel] = useState('')
   const [religion, setReligion] = useState('')
   const [children, setChildren] = useState([])
   const [status, setStatus, statusRef] = useState()
-  const [userData, setUserData, userDataRef] = useState<userData>()
+  const [userData, setUserData, userDataRef] = useState<userDataType>()
   const [userProfile, setUserProfile, userProfileRef] = useState()
   const [disability, setDisability, disabilityRef] = useState(true);
 
   useEffect(() => {
+    if(!router.isReady){
+      return;
+    }
     if(localStorage.getItem('userData')) {
       const getUserData = JSON.parse(localStorage.getItem('userData'));
       setUserData(getUserData);
-      getUserProfile();
-    } else {
-      router.push('/login');
-    }
-  }, [])
-
+    } 
+    getUserProfile();
+  }, [id, router.isReady])
+  // const profileId = asPath.split('/')[2];
   const setFormValues = (profileData) => {
     for(const [key, value] of Object.entries(profileData[0])) {
       if(value !== '') {
@@ -74,7 +74,7 @@ const Profile:FC = () => {
 
   const getUserProfile = async() => {
     console.log('in get profile');
-    await axios.get(GET_PROFILE+'/'+userDataRef.current.id).then(res => {
+    await axios.get(GET_PROFILE+'/'+id).then(res => {
       if(res.data.type === 'success') {
         setUserProfile(res.data.data)
         setFormValues(userProfileRef.current);
@@ -108,9 +108,11 @@ const Profile:FC = () => {
                     <i className='fa fa-user-secret text-pink'>&nbsp;</i>   
                     <span>Personal Info</span>
                   </div>
-                  <div className='col-6 fs-25 text-right p-0'>
-                    <i className='fa fa-edit cursor-pointer' onClick={() => openDialog('personal')}></i>
-                  </div>
+                  {userData &&
+                    <div className='col-6 fs-25 text-right p-0'>
+                      <i className='fa fa-edit cursor-pointer' onClick={() => openDialog('personal')}></i>
+                    </div>
+                  }
                 </h2>
                 <div className='inner-wrap pb-3'>
                   <ul className='profile-box'>
@@ -149,9 +151,11 @@ const Profile:FC = () => {
                     <i className='fa fa-user-graduate text-pink'>&nbsp;</i>   
                     <span>Education</span>
                   </div>
-                  <div className='col-6 fs-25 p-0 text-right' onClick={() => openDialog('education')}>
-                    <i className='fa fa-edit'></i>
-                  </div> 
+                  {userData &&
+                    <div className='col-6 fs-25 p-0 text-right' onClick={() => openDialog('education')}>
+                      <i className='fa fa-edit'></i>
+                    </div> 
+                  }
                 </h2>
                 <div className='inner-wrap pb-3'>
                   <ul className='profile-box'>
@@ -182,9 +186,11 @@ const Profile:FC = () => {
                     <i className='fa fa-user-tie text-pink'>&nbsp;</i>   
                     <span>Profession</span>
                   </div>
-                  <div className='col-6 fs-25 p-0 text-right' onClick={() => openDialog('profession')}>
-                    <i className='fa fa-edit'></i>
-                  </div> 
+                  {userData &&
+                    <div className='col-6 fs-25 p-0 text-right' onClick={() => openDialog('profession')}>
+                      <i className='fa fa-edit cursor-pointer'></i>
+                    </div> 
+                  }
                 </h2>
                 <div className='inner-wrap pb-3'>
                   <ul className='profile-box'>
@@ -215,9 +221,11 @@ const Profile:FC = () => {
                     <i className='fa fa-smile text-pink'>&nbsp;</i>   
                     <span>Appearance</span>
                   </div>
-                  <div className='col-6 fs-25 p-0 text-right' onClick={() => openDialog('appearance')}>
-                    <i className='fa fa-edit'></i>
-                  </div> 
+                  {userData &&
+                    <div className='col-6 fs-25 p-0 text-right' onClick={() => openDialog('appearance')}>
+                      <i className='fa fa-edit cursor-pointer'></i>
+                    </div> 
+                  }
                 </h2>
                 <div className='inner-wrap pb-3'>
                   <ul className='profile-box'>
@@ -256,9 +264,11 @@ const Profile:FC = () => {
                     <i className='fa fa-users text-pink'>&nbsp;</i>   
                     <span>Family</span>
                   </div>
-                  <div className='col-6 fs-25 p-0 text-right' onClick={() => openDialog('family')}>
-                    <i className='fa fa-edit'></i>
-                  </div> 
+                  {userData &&
+                    <div className='col-6 fs-25 p-0 text-right' onClick={() => openDialog('family')}>
+                      <i className='fa fa-edit'></i>
+                    </div>
+                  } 
                 </h2>
                 <div className='inner-wrap pb-3'>
                   <ul className='profile-box'>
@@ -301,9 +311,11 @@ const Profile:FC = () => {
                     <i className='fa fa-info-circle text-pink'>&nbsp;</i>   
                     <span>Other</span>
                   </div>
-                  <div className='col-6 fs-25 p-0 text-right' onClick={() => openDialog('other')}>
-                    <i className='fa fa-edit'></i>
-                  </div> 
+                  {userData &&
+                    <div className='col-6 fs-25 p-0 text-right' onClick={() => openDialog('other')}>
+                      <i className='fa fa-edit'></i>
+                    </div> 
+                  }
                 </h2>
                 <div className='inner-wrap pb-3'>
                   <ul className='profile-box'>
@@ -332,8 +344,8 @@ const Profile:FC = () => {
               </div>
             </div>
           </div>
-          <form method="POST" className="profile-form" onSubmit={handleSubmit(onSubmit)}>
           <Dialog header={dialogHeaderText} visible={dialogVisible} onHide={()=>openDialog('')} style={{ width: '50vw' }} footer={footerContent}>
+          <form method="POST" className="profile-form" onSubmit={handleSubmit(onSubmit)}>
             <div className="row">
               { dialogHeaderText === 'PERSONAL' &&
                 <div className="col-12 white-box">
@@ -932,10 +944,10 @@ const Profile:FC = () => {
                 </>
               }
             </div>
-          </Dialog> 
           </form>
-          <Toast ref={toast} />
-        </Fragment>
+        </Dialog> 
+        <Toast ref={toast} />
+      </Fragment>
     )})}
   </>
   )

@@ -39,21 +39,18 @@ const Login:FC = () => {
       res.data.favourites?.map(fav => {
         favourites.push(fav.listingId)
       })
-      console.log(res.data);
-      if(res.data.type === 'success') {
-        const userData = {
-          session : true,
-          id: res.data.id,
-          fullName: res.data.fullName,
-          membership: res.data.membership,
-          profileScore: res.data.profileScore
-        }
-        localStorage.setItem('userData', JSON.stringify(userData))
-        if(localStorage.getItem('next')) {
-          router.push(localStorage.getItem('next'))
-        } else {
-          router.push('/');
-        }
+      const userData = {
+        session : true,
+        id: res.data.id,
+        fullName: res.data.fullName,
+        membership: res.data.membership,
+        profileScore: res.data.profileScore
+      }
+      localStorage.setItem('userData', JSON.stringify(userData))
+      if(localStorage.getItem('next')) {
+        router.push(localStorage.getItem('next'))
+      } else {
+        router.push('/');
       }
     }).catch(err => {
       console.log(err.response.data.message);
