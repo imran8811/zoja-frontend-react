@@ -3,7 +3,6 @@ import { useRouter } from "next/dist/client/router";
 const axios = require('axios');
 
 import { FORGOT_PASSWORD } from "../../../endpoints";
-import { ToastContainer, toast } from "react-toastify";
 
 const ForgotPassword:FC = () => {
   const router = useRouter();
@@ -53,7 +52,6 @@ const ForgotPassword:FC = () => {
         { emailSent &&
           <h5 className="text-danger mb-5">Password reset link has been sent to your email ID.</h5>
         }
-        <ToastContainer />
       </div>
       <div className="col-4"></div>
     </>

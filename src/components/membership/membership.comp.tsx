@@ -1,13 +1,7 @@
 import React, { FC, useEffect } from 'react'
-import axios from 'axios'
 import { useForm } from 'react-hook-form'
-import { ToastContainer, toast } from 'react-toastify';
 import useState from 'react-usestateref';
-
-import { AGE_SELECTION, POPULAR_CASTS, CITIES, ORIGIN, RELIGIONS, STATUS } from '../../constants'
-import { GET_USER } from '../../endpoints'
 import { useRouter } from 'next/dist/client/router';
-import Link from 'next/link';
 
 const Plans:FC = () => {
   const [professionType, setProfessionType] = useState()

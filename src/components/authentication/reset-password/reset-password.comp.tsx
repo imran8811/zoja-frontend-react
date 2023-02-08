@@ -4,7 +4,6 @@ const axios = require('axios');
 import { useForm } from "react-hook-form";
 
 import { RESET_PASSWORD, CHECK_EMAIL_VALIDITY } from "../../../endpoints";
-import { ToastContainer, toast } from "react-toastify";
 import Link from "next/link";
 
 const ResetPassword:FC = () => {
@@ -84,7 +83,6 @@ const ResetPassword:FC = () => {
         { userError &&
           <h5 className="text-danger mb-5">Email is not valid</h5>
         }
-        <ToastContainer />
       </div>
       <div className="col-4"></div>
     </>
