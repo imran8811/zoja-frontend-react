@@ -7,7 +7,7 @@ import useState from 'react-usestateref';
 import { ConfirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
 
-import { GET_USER, UPDATE_EMAIL, UPDATE_PASSWORD } from "../endpoints";
+import { GET_PROFILE, GET_USER, UPDATE_EMAIL, UPDATE_PASSWORD } from "../endpoints";
 import { Dialog } from "primereact/dialog";
 import { Button } from "primereact/button";
 
@@ -79,7 +79,7 @@ const Settings:FC = () => {
   }
 
   const deleteAccount = () => {
-    axios.delete(GET_USER+userData.id).then((res) => {
+    axios.delete(GET_PROFILE+'/'+userData.id).then((res) => {
       if(res.data.type === 'success') {
         toast.current.show({
           severity: "info",

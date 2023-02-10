@@ -482,7 +482,7 @@ const CreateProfile:FC = () => {
               <div className="row">
                 <div className="col-lg-6">
                   <label>No. of Sons</label>
-                  <select className='select-input' {...register('noOfSons', {required: true})}>
+                  <select className='select-input' {...register('noOfSons')}>
                     <option value="">Select</option>
                     <option value="0">0</option>
                     <option value="1">1</option>
@@ -501,7 +501,7 @@ const CreateProfile:FC = () => {
                 </div>
                 <div className="col-lg-6">
                   <label>No. of Daughters</label>
-                  <select className='select-input' {...register('noOfDaughters', {required: true})}>
+                  <select className='select-input' {...register('noOfDaughters')}>
                     <option value="">Select</option>
                     <option value="0">0</option>
                     <option value="1">1</option>
@@ -526,7 +526,7 @@ const CreateProfile:FC = () => {
               <div className="row">
                 <div className="col-lg-6">
                   <label>No. of Sons</label>
-                  <select className='select-input' {...register('noOfSons', {required: true})}>
+                  <select className='select-input' {...register('noOfSons')}>
                     <option value="">Select</option>
                     <option value="0">0</option>
                     <option value="1">1</option>
@@ -545,7 +545,7 @@ const CreateProfile:FC = () => {
                 </div>
                 <div className="col-lg-6">
                   <label>No. of Daughters</label>
-                  <select className='select-input' {...register('noOfDaughters', {required: true})}>
+                  <select className='select-input' {...register('noOfDaughters')}>
                     <option value="">Select</option>
                     <option value="0">0</option>
                     <option value="1">1</option>
@@ -570,7 +570,7 @@ const CreateProfile:FC = () => {
               <div className="row">
                 <div className="col-lg-6">
                   <label>No. of Sons</label>
-                  <select className='select-input' {...register('noOfSons', {required: true})}>
+                  <select className='select-input' {...register('noOfSons')}>
                     <option value="">Select</option>
                     <option value="0">0</option>
                     <option value="1">1</option>
@@ -589,7 +589,7 @@ const CreateProfile:FC = () => {
                 </div>
                 <div className="col-lg-6">
                   <label>No. of Daughters</label>
-                  <select className='select-input' {...register('noOfDaughters', {required: true})}>
+                  <select className='select-input' {...register('noOfDaughters')}>
                     <option value="">Select</option>
                     <option value="0">0</option>
                     <option value="1">1</option>
