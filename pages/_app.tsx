@@ -23,9 +23,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
           });
         `}
       </Script>
-    // <Provider store={store}>
       <Component {...pageProps} />
-    // </Provider>
     </>
   ) 
 }
