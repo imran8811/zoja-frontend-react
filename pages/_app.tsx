@@ -2,6 +2,7 @@ import type { AppProps } from 'next/app';
 import store from '../src/store';
 import { Provider } from 'react-redux';
 import Script from 'next/script';
+import GoogleAnalytis from '../src/components/ga';
 
 import 'swiper/swiper.min.css';
 import "primereact/resources/themes/lara-light-indigo/theme.css";
@@ -13,6 +14,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
   return (
     <>
       <Component {...pageProps} />
+      <GoogleAnalytis />
     </>
   ) 
 }
