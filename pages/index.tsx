@@ -14,7 +14,7 @@ export default function Index() {
       <BaseLayout>
         <Head>
           <title>{message.title}</title>
-          <link rel="icon" type='image/png' href='src/assets/images/favicon.png'></link>
+          <link rel="icon" type='image/png' href='/assets/images/favicon.png'></link>
           <meta name="google-site-verification" content="_WusGVpago3AmkU-iH-y1Cozq_8CQTnDDk8wXHNtxN4" />
         </Head>
         <Header />
