@@ -61,15 +61,12 @@ const Header: FC = () => {
             {!loggedInRef.current &&
               <>
                 <li><Link href="/login" >Login</Link></li>
-                <li><Link href="/register">Register</Link></li>
+                <li><Link href="/create-profile">Create Profile</Link></li>
               </>
             }
-            <li><Link href="/membership">Membership</Link></li>
+            {/* <li><Link href="/membership">Membership</Link></li> */}
             {loggedInRef.current && 
               <>
-                {userData.profileScore == 0 &&
-                  <li><Link href="/create-profile">Create Profile</Link></li>
-                }
                 <li className="dropdown">
                   <a onClick={(e) => openDropdown(e)} href="#" className="profile-icon">
                     {/* <i className="fas fa-meh-blank"></i> &nbsp; */}

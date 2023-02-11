@@ -3,6 +3,7 @@ import useState from 'react-usestateref';
 import { useRouter } from "next/dist/client/router";
 const axios = require('axios');
 import { useForm } from 'react-hook-form';
+import { Steps } from 'primereact/steps';
 
 import { AGE_SELECTION, POPULAR_CASTS, CITIES, ORIGIN, RELIGIONS, STATUS } from '../../constants';
 import { CREATE_PROFILE, USER_LOGOUT } from "../../endpoints";
@@ -21,6 +22,7 @@ const CreateProfile:FC = () => {
   const [status, setStatus, statusRef] = useState()
   const [userData, setUserData, userDataRef] = useState()
   const [loggedIn, setLoggedIn, loggedInRef] = useState<Boolean>(false);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
     setLoggedIn(getSession())
@@ -62,7 +64,36 @@ const CreateProfile:FC = () => {
     })
   }
 
+  const items = [
+    {
+        label: 'Step 1',
+        command: (event) => {
+            // toast.current.show({ severity: 'info', summary: 'First Step', detail: event.item.label });
+        }
+    },
+    {
+        label: 'Personal',
+        command: (event) => {
+            // toast.current.show({ severity: 'info', summary: 'Second Step', detail: event.item.label });
+        }
+    },
+    {
+        label: 'Education',
+        command: (event) => {
+            // toast.current.show({ severity: 'info', summary: 'Third Step', detail: event.item.label });
+        }
+    },
+    {
+        label: 'Profession',
+        command: (event) => {
+            // toast.current.show({ severity: 'info', summary: 'Last Step', detail: event.item.label });
+        }
+    }
+];
+
   return  (
+    <>
+    <Steps model={items} activeIndex={activeIndex} onSelect={(e) => setActiveIndex(e.index)} readOnly={false} />
     <form method="POST" className="profile-form" onSubmit={handleSubmit(onSubmit)}>
       <div className="col-lg-12">        
         <div className="row">
@@ -656,6 +687,7 @@ const CreateProfile:FC = () => {
         <button type="submit" className="btn btn-lg btn-primary bg-pink">Create Profile</button>
       </div>
     </form>
+    </>
   )
 }
 

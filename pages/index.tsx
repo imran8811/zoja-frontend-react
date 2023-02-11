@@ -1,6 +1,4 @@
 import Head from 'next/head';
-import Script from 'next/script';
-
 import BaseLayout from '../src/layouts/base/base.layout';
 import HomeBanner from '../src/components/banner/home-banner';
 import Header from '../src/components/shared/header/header.comp';
@@ -13,21 +11,11 @@ const message = {
 export default function Index() {
   return (
     <>
-      <Script strategy="lazyOnload" src={`https://www.googletagmanager.com/gtag/js?id=G-F53X9ZE5TD`} />
-      <Script strategy="lazyOnload">
-        {`
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', 'G-F53X9ZE5TD', {
-            page_path: window.location.pathname,
-          });
-        `}
-      </Script>
       <BaseLayout>
         <Head>
           <title>{message.title}</title>
-          <link rel="icon" type='image/png' href='/assets/images/favicon.png'></link>
+          <link rel="icon" type='image/png' href='src/assets/images/favicon.png'></link>
+          <meta name="google-site-verification" content="_WusGVpago3AmkU-iH-y1Cozq_8CQTnDDk8wXHNtxN4" />
         </Head>
         <Header />
         <HomeBanner />
@@ -36,8 +24,8 @@ export default function Index() {
     </>
   )
 }
-export async function getServerSideProps(context) {
-  return {
-    props: {}, // will be passed to the page component as props
-  }
-}
+// export async function getServerSideProps(context) {
+//   return {
+//     props: {}, // will be passed to the page component as props
+//   }
+// }
