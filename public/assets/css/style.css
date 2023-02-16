@@ -16893,6 +16893,17 @@ readers do not read off random characters that represent icons */
   font-weight: normal;
   font-style: normal;
 }
+.profile-page {
+  display: flex;
+  justify-content: center;
+}
+
+@font-face {
+  font-family: "open_sansregular";
+  src: url("/assets/fonts/opensans-regular-webfont.woff2") format("woff2"), url("/assets/fonts/opensans-regular-webfont.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
 body {
   font-family: "open_sansregular";
   font-size: 16px;
@@ -17126,6 +17137,14 @@ body {
 
 .cursor-pointer {
   cursor: pointer;
+}
+
+.mr-5 {
+  margin-right: 25px;
+}
+
+.ml-5 {
+  margin-left: 25px;
 }
 
 .footer-wrap {

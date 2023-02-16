@@ -30,6 +30,7 @@ const Profile:FC = () => {
   const [userData, setUserData, userDataRef] = useState<userDataType>()
   const [userProfile, setUserProfile, userProfileRef] = useState()
   const [disability, setDisability, disabilityRef] = useState(true);
+  const [noProfileFound, setNoProfileFound, noProfileFoundRef] = useState(false)
 
   useEffect(() => {
     if(!router.isReady){
@@ -41,7 +42,6 @@ const Profile:FC = () => {
     } 
     getUserProfile();
   }, [id, router.isReady])
-  // const profileId = asPath.split('/')[2];
   const setFormValues = (profileData) => {
     for(const [key, value] of Object.entries(profileData[0])) {
       if(value !== '') {
@@ -73,11 +73,14 @@ const Profile:FC = () => {
   }
 
   const getUserProfile = async() => {
-    console.log('in get profile');
     await axios.get(GET_PROFILE+'/'+id).then(res => {
       if(res.data.type === 'success') {
-        setUserProfile(res.data.data)
-        setFormValues(userProfileRef.current);
+        if(res.data.data.length > 0) {
+          setUserProfile(res.data.data)
+          setFormValues(userProfileRef.current);
+        } else {
+          setNoProfileFound(true);
+        }
       }
     }).catch(err => {
       console.log(err);
@@ -949,6 +952,9 @@ const Profile:FC = () => {
         <Toast ref={toast} />
       </Fragment>
     )})}
+    { noProfileFoundRef.current &&
+      <h3 className="text-pink text-center mt-5 w-100">No Profile Found</h3>
+    }
   </>
   )
 }

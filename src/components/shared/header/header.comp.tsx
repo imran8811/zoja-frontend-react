@@ -75,9 +75,7 @@ const Header: FC = () => {
                   </a>
                   { dropdownRef.current &&
                     <ul className="profile-dropdown">
-                      {userData.profileScore > 0 &&
-                        <li><Link href={'/profile/'+userData.id}>View Profile</Link></li>
-                      }
+                      <li><Link href={'/profile/'+userData.id}>View Profile</Link></li>
                       <li><Link href="/settings">Settings</Link></li>
                       <li><a href="#" onClick={(e) => {userLogout(e)}}>Logout</a></li>
                     </ul>

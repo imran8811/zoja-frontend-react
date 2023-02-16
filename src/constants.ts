@@ -16,9 +16,11 @@ export const STATUS = {
   single : 'Single',
   divorced : 'Divorced',
   separated : 'Separated',
+  widower : 'Widower',
   married : 'Married',
   divorcedWithChildren : 'Divorced with Children',
   separatedWithChildren : 'Separated with Children',
+  widowerWithChildren : 'Widower with Children',
   marriedWithChildren : 'Married with children' 
 }
 

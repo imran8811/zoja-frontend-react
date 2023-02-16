@@ -1,0 +1,18 @@
+.steps {
+    display: flex;
+    list-style: none;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ccc;
+    background-color: #fff;
+    margin: 0;
+    padding: 0;
+}
+.steps li {
+    padding: 20px;
+    font-weight: bold;
+}
+.steps li.active, .steps li:hover {
+    background-color: blue;
+    color: #fff
+}
