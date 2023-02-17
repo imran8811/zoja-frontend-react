@@ -13,11 +13,11 @@ import Link from "next/link";
 const CreateProfile:FC = () => {
   const router = useRouter();
   const { register, handleSubmit, getValues, watch, setError, clearErrors, formState: { errors} } = useForm();
-  const [professionType, setProfessionType] = useState('Job')
+  const [professionType, setProfessionType] = useState('')
   const [degreeLevel, setDegreeLevel] = useState('')
   const [religion, setReligion] = useState('')
-  const [disability, setDisability] = useState([])
-  const [status, setStatus, statusRef] = useState()
+  const [disability, setDisability] = useState('')
+  const [status, setStatus, statusRef] = useState('')
   const [userData, setUserData, userDataRef] = useState()
   const [loggedIn, setLoggedIn, loggedInRef] = useState<Boolean>(false);
   const [activeStep, setActiveStep] = useState(1);
@@ -25,10 +25,324 @@ const CreateProfile:FC = () => {
   const [invalidEmail, setInvalidEmail] = useState(false)
   const [emailAlreadyRegistered, setEmailAlreadyRegistered] = useState(false)
   const [confirmPasswordInvalid, setConfirmPasswordInvalid] = useState(false)
+  const formSteps = { 
+    1 : [
+      {
+        name: 'fullName',
+        types : {
+          required : 'Required',
+          minLength : 'Minimum 3 characters',
+        }
+      },
+      {
+        name: 'profileType',
+        types: {
+          required: 'Required',
+        } 
+      },
+      {
+        name: 'email',
+        types: {
+          required: 'Required',
+          invalidEmail: 'Invalid Email'
+        } 
+      },
+      {
+        name: 'password',
+        types: {
+          required: 'Required',
+          invalidPassword: 'Must be 8 characters long and alpha numeric'
+        } 
+      },
+      {
+        name: 'confirmPassword',
+        types: {
+          required: 'Required',
+          cPasswordMatch: 'Confirm password is not same as password'
+        } 
+      }
+    ],
+    2 : ['photos'],
+    3 : [
+      {
+        name: 'contactNo',
+        types : {
+          required : 'Required',
+          minLength : 'Minimum 3 characters',
+        }
+      },
+      {
+        name: 'caste',
+        types: {
+          required: 'Required',
+        } 
+      },
+      {
+        name: 'motherLanguage',
+        types: {
+          required: 'Required',
+        } 
+      },
+      {
+        name: 'maritalStatus',
+        types: {
+          required: 'Required',
+        } 
+      },
+      {
+        name: 'noOfSons',
+        types: {
+          required: 'Required',
+        } 
+      },
+      {
+        name: 'noOfDaughters',
+        types: {
+          required: 'Required',
+        } 
+      }
+    ],
+    4 : [
+      {
+        name: 'professionType',
+        types : {
+          required : 'Required',
+        }
+      },
+      {
+        name: 'businessDetails',
+        types: {
+          required : 'Required',
+        }
+      },
+      {
+        name: 'professionTitle',
+        types: {
+          required : 'Required',
+        }
+      },
+      {
+        name: 'jobLocation',
+        types: {
+          required : 'Required',
+        }
+      },
+      {
+        name: 'businessLocation',
+        types: {
+          required : 'Required',
+        }
+      },
+      {
+        name: 'income',
+        types: {
+          required: 'Required',
+        } 
+      }
+    ],
+    5 : [
+      {
+        name: 'degreeLevel',
+        types : {
+          required : 'Required',
+        }
+      },
+      {
+        name: 'degreeType',
+        types: {
+          required : 'Required',
+        }
+      },
+      {
+        name: 'institute',
+        types: {
+          required : 'Required',
+        }
+      },
+      {
+        name: 'degreeYear',
+        types: {
+          required : 'Required',
+        }
+      }
+    ],
+    6 : [
+      {
+        name: 'religion',
+        types : {
+          required : 'Required',
+        }
+      },
+      {
+        name: 'subReligion',
+        types: {
+          required : 'Required',
+        }
+      }
+    ],
+    7 : [
+      {
+        name: 'age',
+        types : {
+          required : 'Required',
+        }
+      },
+      {
+        name: 'complexion',
+        types: {
+          required : 'Required',
+        }
+      },
+      {
+        name: 'weight',
+        types: {
+          required : 'Required',
+        }
+      },
+      {
+        name: 'feet',
+        types: {
+          required : 'Required',
+        }
+      },
+      {
+        name: 'inch',
+        types: {
+          required : 'Required',
+        }
+      },
+      {
+        name: 'headType',
+        types: {
+          required : 'Required',
+        }
+      }
+    ],
+    8 : [
+      {
+        name: 'currentAddessCountry',
+        types : {
+          required : 'Required',
+        }
+      },
+      {
+        name: 'currentAddessCity',
+        types: {
+          required : 'Required',
+        }
+      },
+      {
+        name: 'currentAddessArea',
+        types: {
+          required : 'Required',
+        }
+      },
+      {
+        name: 'permanentAddessCountry',
+        types: {
+          required : 'Required',
+        }
+      },
+      {
+        name: 'permanentAddessCity',
+        types: {
+          required : 'Required',
+        }
+      },
+      {
+        name: 'permanentAddessArea',
+        types: {
+          required : 'Required',
+        }
+      }
+    ],
+    9 : [
+      {
+        name: 'father',
+        types : {
+          required : 'Required',
+        }
+      },
+      {
+        name: 'mother',
+        types: {
+          required : 'Required',
+        }
+      },
+      {
+        name: 'sisters',
+        types: {
+          required : 'Required',
+        }
+      },
+      {
+        name: 'marriedSisters',
+        types: {
+          required : 'Required',
+        }
+      },
+      {
+        name: 'brothers',
+        types: {
+          required : 'Required',
+        }
+      },
+      {
+        name: 'marriedBrothers',
+        types: {
+          required : 'Required',
+        }
+      },
+      {
+        name: 'siblingNumber',
+        types: {
+          required : 'Required',
+        }
+      }
+    ],
+    10 : [
+      {
+        name: 'disability',
+        types : {
+          required : 'Required',
+        }
+      },
+      {
+        name: 'disabilityDetails',
+        types: {
+          required : 'Required',
+        }
+      },
+      {
+        name: 'smoker',
+        types: {
+          required : 'Required',
+        }
+      },
+      {
+        name: 'drinker',
+        types: {
+          required : 'Required',
+        }
+      },
+      {
+        name: 'childProducer',
+        types: {
+          required : 'Required',
+        }
+      },
+      {
+        name: 'requirements',
+        types: {
+          required : 'Required',
+        }
+      }
+    ],
+  }
 
   useEffect(() => {
     setLoggedIn(getSession())
-    setUserData(JSON.parse(localStorage.getItem('userData')));
+    // setUserData(JSON.parse(localStorage.getItem('userData') || ''));
     // if(typeof localStorage.getItem('userData') === 'string') {
       // userDataRef.current.profileScore = 80;
       // console.log(userDataRef.current);
@@ -60,12 +374,12 @@ const CreateProfile:FC = () => {
       setConfirmPasswordInvalid(true);
       return;
     }
-    const formData = {...data, userId: userData.id}
+    const formData = {...data}
     console.log(formData);
     axios.post(CREATE_PROFILE, formData).then(res => {
       if(res.data.type === 'success') {
-        userDataRef.current.profileScore = res.data.profileScore;
-        router.push('/profile/'+userData.id);
+        // userDataRef.current.profileScore = res.data.profileScore;
+        // router.push('/profile/'+userDataRef.current.id);
       } else {
         // toast.error(res.data.message);
       }
@@ -79,85 +393,6 @@ const CreateProfile:FC = () => {
   }
 
   const nextStep = () => {
-    const formSteps = { 
-      1 : [
-        {
-          name: 'fullName',
-          types : {
-            required : 'Required',
-            minLength : 'Minimum 3 characters',
-          }
-        },
-        {
-          name: 'profileType',
-          types: {
-            required: 'Required',
-          } 
-        },
-        {
-          name: 'email',
-          types: {
-            required: 'Required',
-            invalidEmail: 'Invalid Email'
-          } 
-        },
-        {
-          name: 'password',
-          types: {
-            required: 'Required',
-            invalidPassword: 'Must be 8 characters long and alpha numeric'
-          } 
-        },
-        {
-          name: 'confirmPassword',
-          types: {
-            required: 'Required',
-            cPasswordMatch: 'Confirm password is not same as password'
-          } 
-        }
-      ],
-      2 : ['photos'],
-      3 : [
-        {
-          name: 'contactNo',
-          types : {
-            required : 'Required',
-            minLength : 'Minimum 3 characters',
-          }
-        },
-        {
-          name: 'caste',
-          types: {
-            required: 'Required',
-          } 
-        },
-        {
-          name: 'motherLanguage',
-          types: {
-            required: 'Required',
-          } 
-        },
-        {
-          name: 'maritalStatus',
-          types: {
-            required: 'Required',
-          } 
-        },
-        {
-          name: 'noOfSons',
-          types: {
-            required: 'Required',
-          } 
-        },
-        {
-          name: 'noOfDaughters',
-          types: {
-            required: 'Required',
-          } 
-        }
-      ],
-    }
-
     const checkErrorType = (item, value) =>{
       const emailRegex = new RegExp(/^(([^\s"(),.:;<>@[\\\]]+(\.[^\s"(),.:;<>@[\\\]]+)*)|(".+"))@((\[(?:\d{1,3}\.){3}\d{1,3}])|(([\dA-Za-z-]+\.)+[A-Za-z]{2,}))$/)
       const passwordRegex = new RegExp(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/)
@@ -184,27 +419,39 @@ const CreateProfile:FC = () => {
     }
 
     let formValid = true;
-    formSteps[activeStep].map(item => {
-      // console.log(item);
-      const inputValue = getValues(item.name);
-      checkErrorType(item, inputValue);
-      // console.log(errorTypeRef.current);
+    for(let i = 0; i < formSteps[activeStep].length; i++){
+      const inputValue = getValues(formSteps[activeStep][i].name);
+      checkErrorType(formSteps[activeStep][i], inputValue);
+      if(getValues('professionType') === 'job' && (formSteps[activeStep][i].name === 'businessDetails' || formSteps[activeStep][i].name === 'businessLocation')){
+        continue;
+      } else if(getValues('professionType') === 'business' && (formSteps[activeStep][i].name === 'professionTitle' || formSteps[activeStep][i].name === 'jobLocation')){
+        continue;
+      } else if(getValues('degreeLevel') === 'underMatric' && (formSteps[activeStep][i].name === 'degreeType' || formSteps[activeStep][i].name === 'institute')){
+        continue;
+      } else if((
+        getValues('degreeLevel') === 'matric' || 
+        getValues('degreeLevel') === 'oLevel' || 
+        getValues('degreeLevel') === 'intermediate' || 
+        getValues('degreeLevel') === 'aLevel') && 
+        formSteps[activeStep][i].name === 'degreeType'){
+        continue;
+      }
       if(errorTypeRef.current !== '') {
         formValid = false;
-        setError((item.name), {
+        setError((formSteps[activeStep][i].name), {
           type: errorTypeRef.current,
-          message: item.types[errorTypeRef.current]
+          message: formSteps[activeStep][i].types[errorTypeRef.current]
         })
       } else {
-        clearErrors(item.name);
+        clearErrors(formSteps[activeStep][i].name);
       }
-    })
+    }
     formValid? setActiveStep(activeStep+1) : setActiveStep(activeStep);
   }
   return  (
     <form method="POST" className="mb-5" onSubmit={handleSubmit(onSubmit)}>
       <h1 className="text-center pt-3 pb-3">Create Profile</h1>
-      <Steps steps={steps} setActiveStep={nextStep} initialStep={activeStep} />
+      <Steps steps={steps} setActiveStep={setActiveStep} initialStep={activeStep} />
       <div className="row profile-page">
         { activeStep === 1 &&
           <div className="col-lg-4 white-box">
@@ -359,45 +606,61 @@ const CreateProfile:FC = () => {
             <h4 className="mb-3 section-heading">Profession</h4>
             <div className="mb-3">
               <label htmlFor="profession">Profession Type</label>
-              <select className="select-input" {...register('professionType', {required: true})} onChange={(e) => setProfessionType(e.target.value)}>
+              <select className="select-input" {...register('professionType')} onChange={(e) => setProfessionType(e.target.value)}>
                 <option value="">Select</option>
                 <option value="none">None</option>
                 <option value="job">Job</option>
                 <option value="business">Business</option>
                 <option value="jobBusiness">Job &amp; Business</option>
               </select>
+              {errors.professionType && <p className="text-danger text-sm">{errors.professionType.message}</p>}
             </div>
             { professionType === 'business' && 
               <div className="mb-3">
                 <label htmlFor="business-details">Business Details</label>
-                <textarea rows={5} className="form-control" {...register('businessDetails', {required : true})} placeholder="Shop, Trading, Factory"></textarea>
+                <textarea rows={5} className="form-control" {...register('businessDetails')} placeholder="Shop, Trading, Factory"></textarea>
+                {errors.businessDetails && <p className="text-danger text-sm">{errors.businessDetails.message}</p>}
               </div>
             }
             { professionType === 'job' &&
               <div className="mb-3">
                 <label htmlFor="profession-title">Profession Title</label>
-                <input type="text" id="profession-title" className="form-control" {...register('professionTitle', {required : true})} placeholder="Engineer, Doctor, Accountant" />
+                <input type="text" id="profession-title" className="form-control" {...register('professionTitle')} placeholder="Engineer, Doctor, Accountant" />
+                {errors.professionTitle && <p className="text-danger text-sm">{errors.professionTitle.message}</p>}
               </div>
             }
             { professionType === 'jobBusiness' &&
               <>
                 <div className="mb-3">
                   <label htmlFor="job-title">Job Title</label>
-                  <input type="text" className="form-control" {...register('jobTitle')} placeholder="Engineer, Doctor, Accountant" />
+                  <input type="text" className="form-control" {...register('professionTitle')} placeholder="Engineer, Doctor, Accountant" />
+                  {errors.professionTitle && <p className="text-danger text-sm">{errors.professionTitle.message}</p>}
                 </div>
                 <div className="mb-3">
                   <label htmlFor="business-details">Business Details</label>
-                  <textarea rows={5} className="form-control" {...register('businessDetails')} name="businessDetails" placeholder="Shop, Trading, Factory"></textarea>
+                  <textarea rows={5} className="form-control" {...register('businessDetails')} placeholder="Shop, Trading, Factory"></textarea>
+                  {errors.professionTitle && <p className="text-danger text-sm">{errors.businessDetails.message}</p>}
                 </div>
               </>
             }
-            <div className="mb-3">
-              <label htmlFor="job-business-location">Job/Business Location</label>
-              <input type="text" id="job-business-location" className="form-control" {...register('jobBusinessLocation', {required: true})} placeholder="Lahore, Karachi, Online etc..." />
-            </div>
+            { (professionType === 'job' || professionType === 'jobBusiness') &&
+              <div className="mb-3">
+                <label htmlFor="job-location">Job Location</label>
+                <input type="text" id="job-location" className="form-control" {...register('jobLocation')} placeholder="Lahore, Karachi, Online etc..." />
+                {errors.jobLocation && <p className="text-danger text-sm">{errors.jobLocation.message}</p>}
+              </div>
+            }
+            { (professionType === 'business' || professionType === 'jobBusiness') &&
+              <div className="mb-3">
+                <label htmlFor="business-location">Business Location</label>
+                <input type="text" id="business-location" className="form-control" {...register('businessLocation')} placeholder="Lahore, Karachi, Online etc..." />
+                {errors.businessLocation && <p className="text-danger text-sm">{errors.businessLocation.message}</p>}
+              </div>
+            }
             <div className="mb-3">
               <label htmlFor="income">Income per month</label>
-              <input type="text" id="income" className="form-control" {...register('income', {required: true})} placeholder="50000-100000" />
+              <input type="text" id="income" className="form-control" {...register('income')} placeholder="50000-100000" />
+              {errors.income && <p className="text-danger text-sm">{errors.income.message}</p>}
             </div>
           </div>
         }
@@ -409,7 +672,7 @@ const CreateProfile:FC = () => {
               <select
                 id="degree-level" 
                 className="select-input" 
-                {...register('degreeLevel', {required: true})} 
+                {...register('degreeLevel')} 
                 onChange={(e) => setDegreeLevel(e.target.value)}>
                 <option value="">Select</option>
                 <option value="underMatric">Under Matric</option>
@@ -419,36 +682,28 @@ const CreateProfile:FC = () => {
                 <option value="intermediate">Intermediate</option>
                 <option value="graduate">Graduate</option>
                 <option value="masters">Masters</option>
-                <option value="phd">Phd</option>
+                {/* <option value="phd">Phd</option> */}
               </select>
+              {errors.degreeLevel && <p className="text-danger text-sm">{errors.degreeLevel.message}</p>}
             </div>
-            {degreeLevel === 'graduate' &&
+            {(degreeLevel === 'graduate' || degreeLevel === 'masters' || degreeLevel === 'phd') &&
               <div className="mb-3">
                 <label htmlFor="degree-type">Degree Type</label>
-                <input id="degree-type" className="form-control" {...register('degreeType', {required: true})} placeholder="BSCS, MBBS, CA, ACCA" />
-              </div>
-            }
-            {degreeLevel === 'masters' &&
-              <div className="mb-3">
-                <label htmlFor="degree-type">Degree Type</label>
-                <input id="degree-type" className="form-control" {...register('degreeType', {required: true})} placeholder="BSCS, MBBS, CA, ACCA" />
-              </div>
-            }
-            {degreeLevel === 'phd' &&
-              <div className="mb-3">
-                <label htmlFor="degree-type">Degree Type</label>
-                <input id="degree-type" className="form-control" {...register('degreeType', {required: true})} placeholder="BSCS, MBBS, CA, ACCA" />
+                <input id="degree-type" className="form-control" {...register('degreeType')} placeholder="BSCS, MBBS, CA, ACCA" />
+                {errors.degreeType && <p className="text-danger text-sm">{errors.degreeType.message}</p>}
               </div>
             }
             {degreeLevel != 'underMatric' && 
               <div className="mb-3">
                 <label htmlFor="institute">Institute</label>
-                <input id="institute" className="form-control" {...register('institute', {required: true})} name="institute" placeholder="Board/Uni name" />
+                <input id="institute" className="form-control" {...register('institute')} name="institute" placeholder="Board/Uni name" />
+                {errors.institute && <p className="text-danger text-sm">{errors.institute.message}</p>}
               </div>
             }
             <div className="mb-3">
               <label htmlFor="degree-year">Degree Year</label>
-              <input id="degree-year" className="form-control" {...register('degreeYear', {required: true})} placeholder="2000, 2005" />
+              <input id="degree-year" className="form-control" {...register('degreeYear')} placeholder="2000, 2005" />
+              {errors.degreeYear && <p className="text-danger text-sm">{errors.degreeYear.message}</p>}
             </div>
           </div>
         }
@@ -457,7 +712,7 @@ const CreateProfile:FC = () => {
             <h4 className="mb-3 section-heading">Religion</h4>
             <div className="mb-3">
               <label htmlFor="religion">Religion</label>
-              <select className="select-input" {...register('religion', {required: true})} onChange={(e) => setReligion(e.target.value)}>
+              <select className="select-input" {...register('religion')} onChange={(e) => setReligion(e.target.value)}>
                 <option value="">Select</option>
                 { RELIGIONS.map((religion, index) => {
                   return(
@@ -465,10 +720,12 @@ const CreateProfile:FC = () => {
                   )
                 })}
               </select>
+              {errors.religion && <p className="text-danger text-sm">{errors.religion.message}</p>}
             </div>
             <div className="mb-3">
               <label htmlFor="sub-religion">Sub Religion</label>
-              <input type="text" id="sub-religion" placeholder="Sunni, Shia, Catholic..." className="form-control" {...register('subReligion', {required: true})} />
+              <input type="text" id="sub-religion" placeholder="Sunni, Shia, Catholic..." className="form-control" {...register('subReligion')} />
+              {errors.subReligion && <p className="text-danger text-sm">{errors.subReligion.message}</p>}
             </div>
           </div>
         }
@@ -477,7 +734,7 @@ const CreateProfile:FC = () => {
             <h4 className="mb-3 section-heading">Body</h4>
             <div className="mb-3">
               <label htmlFor="age">Age</label>
-              <select id="age" className="select-input" {...register('age', {required: true})}>
+              <select id="age" className="select-input" {...register('age')}>
                 <option value="">Select</option>
                 { AGE_SELECTION.map((age) => {
                   return (
@@ -485,42 +742,29 @@ const CreateProfile:FC = () => {
                   )
                 })}
               </select>
+              {errors.age && <p className="text-danger text-sm">{errors.age.message}</p>}
             </div>
             <div className="mb-3">
               <label htmlFor="complexion">Complexion</label>
-              <select id="complexion" className="select-input" {...register('complexion', {required: true})}>
+              <select id="complexion" className="select-input" {...register('complexion')}>
                 <option value="">Select</option>
                 <option value="fair">Fair</option>
                 <option value="brown">Brown</option>
                 <option value="black">Black</option>
               </select>
+              {errors.complexion && <p className="text-danger text-sm">{errors.complexion.message}</p>}
             </div>
+            
             <div className="mb-3">
-              <label htmlFor="weight">Weight in KG</label>
-              <input type="text" className="form-control" {...register('weight', {required: true})} placeholder="70, 80" id="weight" />
-            </div>
-            <div className="mb-3">
-              <label>Height</label>
               <div className="row">
-                <div className="col-lg-6">
-                  <label htmlFor="feet">Feet</label>
-                  <select id="feet" {...register('feet', {required: true})} className="select-input">
-                    <option value="">Select</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                    <option value="9">9</option>
-                    <option value="10">10</option>
-                  </select>
+                <div className="col-4">
+                  <label htmlFor="weight">Weight in KG</label>
+                  <input type="text" className="form-control" {...register('weight')} placeholder="70, 80" id="weight" />
+                  {errors.weight && <p className="text-danger text-sm">{errors.weight.message}</p>}
                 </div>
-                <div className="col-lg-6">
-                  <label htmlFor="inch">Inch</label>
-                  <select id="inch" {...register('inch', {required: true})} className="select-input">
+                <div className="col-4">
+                  <label htmlFor="feet">Height (Feet)</label>
+                  <select id="feet" {...register('feet')} className="select-input">
                     <option value="">Select</option>
                     <option value="1">1</option>
                     <option value="2">2</option>
@@ -533,16 +777,37 @@ const CreateProfile:FC = () => {
                     <option value="9">9</option>
                     <option value="10">10</option>
                   </select>
+                  {errors.feet && <p className="text-danger text-sm">{errors.feet.message}</p>}
+                </div>
+                <div className="col-4">
+                  <label htmlFor="inch">Height (Inches)</label>
+                  <select id="inch" {...register('inch')} className="select-input">
+                    <option value="">Select</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                  </select>
+                  {errors.inch && <p className="text-danger text-sm">{errors.inch.message}</p>}
                 </div>
               </div>
             </div>
             <div className="mb-3">
               <label htmlFor="weight">Hairs or Bald</label>
-              <select id="inch" {...register('headType', {required: true})} className="select-input">
+              <select id="inch" {...register('headType')} className="select-input">
                 <option value="">Select</option>
                 <option value="hairs">Hairs</option>
                 <option value="bald">Bald</option>
               </select>
+              {errors.headType && <p className="text-danger text-sm">{errors.headType.message}</p>}
             </div>
           </div>
         }
@@ -551,17 +816,18 @@ const CreateProfile:FC = () => {
             <h4 className="mb-3 section-heading">Current Address</h4>
             <div className="mb-3">
               <label htmlFor="country">Country</label>
-              <select id="country" {...register('currentAddessCountry', {required: true})} className="select-input">
+              <select id="country" {...register('currentAddessCountry')} className="select-input">
                 <option value="">Select</option>
                 <option value="pakistan">Pakistan</option>
                 <option value="uk">UK</option>
                 <option value="usa">USA</option>
                 <option value="saudi-arabia">Saudi Arabia</option>
               </select>
+              {errors.currentAddessCountry && <p className="text-danger text-sm">{errors.currentAddessCountry.message}</p>}
             </div>
             <div className="mb-3">
               <label htmlFor="city">City</label>
-              <select name="city" {...register('currentAddessCity', {required: true})} className="select-input">
+              <select name="city" {...register('currentAddessCity')} className="select-input">
                 <option value="">Select</option>
                 { CITIES.map((city, index) => {
                   return (
@@ -569,25 +835,28 @@ const CreateProfile:FC = () => {
                   )
                 })}
               </select>
+              {errors.currentAddessCity && <p className="text-danger text-sm">{errors.currentAddessCity.message}</p>}
             </div>
             <div className="mb-3">
               <label htmlFor="current-addess-area">Area</label>
-              <input id="current-addess-area" className="form-control" {...register('currentAddessArea', {required: true})} placeholder="House, Street, Town" />
+              <input id="current-addess-area" className="form-control" {...register('currentAddessArea')} placeholder="House, Street, Town" />
+              {errors.currentAddessArea && <p className="text-danger text-sm">{errors.currentAddessArea.message}</p>}
             </div>
             <h4 className="mb-3 section-heading">Permanent Address</h4>
             <div className="mb-3">
               <label htmlFor="country">Country</label>
-              <select id="country" {...register('permanentAddessCountry', {required: true})} className="select-input">
+              <select id="country" {...register('permanentAddessCountry')} className="select-input">
                 <option value="">Select</option>
                 <option value="pakistan">Pakistan</option>
                 <option value="uk">UK</option>
                 <option value="usa">USA</option>
                 <option value="saudi-arabia">Saudi Arabia</option>
               </select>
+              {errors.permanentAddessCountry && <p className="text-danger text-sm">{errors.permanentAddessCountry.message}</p>}
             </div>
             <div className="mb-3">
               <label htmlFor="city">City</label>
-              <select name="city" {...register('permanentAddessCity', {required: true})} className="select-input">
+              <select name="city" {...register('permanentAddessCity')} className="select-input">
                 <option value="">Select</option>
                 { CITIES.map((city, index) => {
                   return (
@@ -595,10 +864,12 @@ const CreateProfile:FC = () => {
                   )
                 })}
               </select>
+              {errors.permanentAddessCity && <p className="text-danger text-sm">{errors.permanentAddessCity.message}</p>}
             </div>
             <div className="mb-3">
               <label htmlFor="current-addess-area">Area</label>
-              <input id="current-addess-area" className="form-control" {...register('permanentAddessArea', {required: true})} placeholder="House, Street, Town" />
+              <input id="current-addess-area" className="form-control" {...register('permanentAddessArea')} placeholder="House, Street, Town" />
+              {errors.permanentAddessArea && <p className="text-danger text-sm">{errors.permanentAddessArea.message}</p>}
             </div>
           </div>
         }
@@ -607,23 +878,25 @@ const CreateProfile:FC = () => {
             <h4 className="mb-3 section-heading">Family</h4>
             <div className="mb-3">
               <label htmlFor="father">Father Alive?</label>
-              <select id="father" {...register('father', {required: true})} className="select-input">
+              <select id="father" {...register('father')} className="select-input">
                 <option value="">Select</option>
                 <option value="yes">Yes</option>
                 <option value="no">No</option>
               </select>
+              {errors.father && <p className="text-danger text-sm">{errors.father.message}</p>}
             </div>
             <div className="mb-3">
               <label htmlFor="mother">Mother Alive?</label>
-              <select id="mother" {...register('mother', {required: true})} className="select-input">
+              <select id="mother" {...register('mother')} className="select-input">
                 <option value="">Select</option>
                 <option value="yes">Yes</option>
                 <option value="no">No</option>
               </select>
+              {errors.mother && <p className="text-danger text-sm">{errors.mother.message}</p>}
             </div>
             <div className="mb-3">
               <label htmlFor="sisters">Total Sisters</label>
-              <select className='select-input' {...register('sisters', {required: true})}>
+              <select className='select-input' {...register('sisters')}>
                 <option value="">Select</option>
                 <option value="0">0</option>
                 <option value="1">1</option>
@@ -639,10 +912,11 @@ const CreateProfile:FC = () => {
                 <option value="11">11</option>
                 <option value="12">12</option>
               </select>
+              {errors.sisters && <p className="text-danger text-sm">{errors.sisters.message}</p>}
             </div>
             <div className="mb-3">
               <label htmlFor="married-sisters">Married Sisters</label>
-              <select className='select-input' {...register('marriedSisters', {required: true})}>
+              <select className='select-input' {...register('marriedSisters')}>
                 <option value="">Select</option>
                 <option value="0">0</option>
                 <option value="1">1</option>
@@ -658,10 +932,11 @@ const CreateProfile:FC = () => {
                 <option value="11">11</option>
                 <option value="12">12</option>
               </select>
+              {errors.marriedSisters && <p className="text-danger text-sm">{errors.marriedSisters.message}</p>}
             </div>
             <div className="mb-3">
               <label htmlFor="brothers">Total Brothers</label>
-              <select className='select-input' {...register('brothers', {required: true})}>
+              <select className='select-input' {...register('brothers')}>
                 <option value="">Select</option>
                 <option value="0">0</option>
                 <option value="1">1</option>
@@ -677,10 +952,11 @@ const CreateProfile:FC = () => {
                 <option value="11">11</option>
                 <option value="12">12</option>
               </select>
+              {errors.brothers && <p className="text-danger text-sm">{errors.brothers.message}</p>}
             </div>
             <div className="mb-3">
               <label htmlFor="married-brothers">Married Brothers</label>
-              <select className='select-input' {...register('marriedBrothers', {required: true})}>
+              <select className='select-input' {...register('marriedBrothers')}>
                 <option value="">Select</option>
                 <option value="0">0</option>
                 <option value="1">1</option>
@@ -696,10 +972,11 @@ const CreateProfile:FC = () => {
                 <option value="11">11</option>
                 <option value="12">12</option>
               </select>
+              {errors.marriedBrothers && <p className="text-danger text-sm">{errors.marriedBrothers.message}</p>}
             </div>
             <div className="mb-3">
               <label htmlFor="sibling-number">Your number in siblings</label>
-              <select className='select-input' {...register('siblingNumber', {required: true})}>
+              <select className='select-input' {...register('siblingNumber')}>
                 <option value="">Select</option>
                 <option value="1">1st</option>
                 <option value="2">2nd</option>
@@ -714,6 +991,7 @@ const CreateProfile:FC = () => {
                 <option value="11">11th</option>
                 <option value="last">Last</option>
               </select>
+              {errors.siblingNumber && <p className="text-danger text-sm">{errors.siblingNumber.message}</p>}
             </div>
           </div>
         }
@@ -722,44 +1000,50 @@ const CreateProfile:FC = () => {
             <h4 className="mb-3 section-heading">Others</h4>
             <div className="mb-3">
               <label htmlFor="disability">Disability</label>
-              <select id="disability" {...register('disability', {required: true})} onChange={(e) => setDisability(e.target.value)} className="select-input">
+              <select id="disability" {...register('disability')} onChange={(e) => setDisability(e.target.value)} className="select-input">
                 <option value="">Select</option>
                 <option value="no">No</option>
                 <option value="yes">Yes</option>
               </select>
+              {errors.disability && <p className="text-danger text-sm">{errors.disability.message}</p>}
             </div>
             {disability === 'yes' &&
               <div className="mb-3">
-                <textarea rows={5} placeholder="Disability details" className="form-control"></textarea>
+                <textarea rows={5} placeholder="Disability details" {...register('disabilityDetails')} className="form-control"></textarea>
+                {errors.disabilityDetails && <p className="text-danger text-sm">{errors.disabilityDetails.message}</p>}
               </div>
             }
             <div className="mb-3">
               <label htmlFor="smoker">Do you smoke?</label>
-              <select id="smoker" {...register('smoker', {required: true})} className="select-input">
+              <select id="smoker" {...register('smoker')} className="select-input">
                 <option value="">Select</option>
                 <option value="no">No</option>
                 <option value="yes">Yes</option>
               </select>
+              {errors.smoker && <p className="text-danger text-sm">{errors.smoker.message}</p>}
             </div>
             <div className="mb-3">
               <label htmlFor="drinker">Do you drink?</label>
-              <select id="drinker" {...register('drinker', {required: true})} className="select-input">
+              <select id="drinker" {...register('drinker')} className="select-input">
                 <option value="">Select</option>
                 <option value="no">No</option>
                 <option value="yes">Yes</option>
               </select>
+              {errors.drinker && <p className="text-danger text-sm">{errors.drinker.message}</p>}
             </div>
             <div className="mb-3">
               <label htmlFor="child-producer">Are you able to produce child?</label>
-              <select id="child-producer" {...register('childProducer', {required: true})} className="select-input">
+              <select id="child-producer" {...register('childProducer')} className="select-input">
                 <option value="">Select</option>
                 <option value="yes">Yes</option>
                 <option value="no">No</option>
               </select>
+              {errors.childProducer && <p className="text-danger text-sm">{errors.childProducer.message}</p>}
             </div>
             <div className="mb-3">
               <label htmlFor="requirements">Notes for your partner</label>
-              <textarea className="form-control" {...register('requirements', {required: true})} placeholder="caring, loving etc" rows={8}></textarea>
+              <textarea className="form-control" {...register('requirements')} placeholder="caring, loving etc" rows={8}></textarea>
+              {errors.requirements && <p className="text-danger text-sm">{errors.requirements.message}</p>}
             </div>
           </div>
         }

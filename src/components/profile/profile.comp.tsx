@@ -26,10 +26,10 @@ const Profile:FC = () => {
   const [degreeLevel, setDegreeLevel] = useState('')
   const [religion, setReligion] = useState('')
   const [children, setChildren] = useState([])
-  const [status, setStatus, statusRef] = useState()
+  const [status, setStatus, statusRef] = useState('')
   const [userData, setUserData, userDataRef] = useState<userDataType>()
-  const [userProfile, setUserProfile, userProfileRef] = useState()
-  const [disability, setDisability, disabilityRef] = useState(true);
+  const [userProfile, setUserProfile, userProfileRef] = useState([])
+  const [disability, setDisability, disabilityRef] = useState('');
   const [noProfileFound, setNoProfileFound, noProfileFoundRef] = useState(false)
 
   useEffect(() => {
@@ -100,7 +100,7 @@ const Profile:FC = () => {
   }
   return(
     <>
-    { userProfileRef?.current?.length > 0 && userProfileRef.current.map((profile, index) => {
+    { userProfileRef.current?.length > 0 && userProfileRef.current.map((profile, index) => {
       return (
         <Fragment key={index}>
           <div className='user-profile-view row pt-3 mb-3' key={index}>

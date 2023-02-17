@@ -12,7 +12,7 @@ const Plans:FC = () => {
   const { query, isReady } = useRouter();
   const { register, handleSubmit, getValues, setValue, watch, formState: { errors} } = useForm();
   const { action } = query;
-  const { session, profileScore } = userDataRef.current;
+  // const { session, profileScore } = userDataRef.current;
 
   useEffect(() => {
     if(!isReady) {return;}

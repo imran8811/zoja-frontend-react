@@ -31,14 +31,14 @@ const Listing: FC = () => {
   const [contactNo, showContactNo, contactNoRef] = useState(false);
 
   const { profileType, ageFrom, ageTo, caste, religion, sub_religion, origin } = query
-  const { session, membership } = userDataRef.current;
+  // const { session, membership } = userDataRef.current;
   
   useEffect(() => {
     if(!isReady) {return;}
     const localData = JSON.parse(localStorage.getItem('userData'));
     if(localData) {
       setUserData(localData)
-      setUserFavourite(userDataRef.current.favourites)
+      // setUserFavourite(userDataRef.current.favourites)
     }
     getProfiles()
   }, [isReady])
@@ -93,80 +93,80 @@ const Listing: FC = () => {
 
   const handleViewContact = (e) => {
     e.preventDefault();
-    console.log(session, membership)
-    if(session) {
-      if(membership != '0') {
-        showContactNo(true)
-      } else {
-        <ConfirmDialog 
-          visible={visible} 
-          onHide={() => setVisible(false)} 
-          message="Only paid members can see contact details" 
-          header="Confirmation" 
-          icon="pi pi-exclamation-triangle" 
-          accept={() => router.push('/membership')} 
-          reject={() => {setVisible(false)}} />
-      }
-    } else {
-      localStorage.setItem('next', window.location.pathname+window.location.search);
-      <ConfirmDialog 
-          visible={visible} 
-          onHide={() => setVisible(false)} 
-          message="Login and membership required" 
-          header="Confirmation" 
-          icon="pi pi-exclamation-triangle"
-          accept={() => router.push('/login')} 
-          reject={() => {setVisible(false)}} />
-    }
+    // console.log(session, membership)
+    // if(session) {
+    //   if(membership != '0') {
+    //     showContactNo(true)
+    //   } else {
+    //     <ConfirmDialog 
+    //       visible={visible} 
+    //       onHide={() => setVisible(false)} 
+    //       message="Only paid members can see contact details" 
+    //       header="Confirmation" 
+    //       icon="pi pi-exclamation-triangle" 
+    //       accept={() => router.push('/membership')} 
+    //       reject={() => {setVisible(false)}} />
+    //   }
+    // } else {
+    //   localStorage.setItem('next', window.location.pathname+window.location.search);
+    //   <ConfirmDialog 
+    //       visible={visible} 
+    //       onHide={() => setVisible(false)} 
+    //       message="Login and membership required" 
+    //       header="Confirmation" 
+    //       icon="pi pi-exclamation-triangle"
+    //       accept={() => router.push('/login')} 
+    //       reject={() => {setVisible(false)}} />
+    // }
   }
 
-  const addRemoveFavourite = (e, listingId) => {
-    e.preventDefault();
-    if(userData?.session === true) {
-      const isFavourite = userData.favourites.indexOf(listingId);
-      const action  = isFavourite === -1? 'add' : 'color-grey';
-      const data = {
-        listingId : listingId,
-        userId : userData.id
-      }
-      if(action === 'add') {
-        e.target.classList.add('text-danger');
-        axios.post(ADD_FAVOURITE, data).then(res => {
-          if(res.data.type !== 'success') {
-            // toast.error('Something went wrong')
-            e.target.classList.remove('text-danger');
-            e.target.classList.add('color-grey');
-          }
-          for (var key in res.data.data) {
-            if(res.data.data.hasOwnProperty(key) && key === 'listingId') {
-              userData.favourites.push(res.data.data[key])
-            }
-          }
-          setUserFavourite(userDataRef.current.favourites)
-          localStorage.setItem('userData', JSON.stringify(userData))
-        })
-      } else {
-        e.target.classList.add('color-grey');
-        axios.delete(`${DELETE_FAVOURITE}/${data.listingId}/${data.userId}`).then(res => {
-          if(res.data.type === 'success') {
-            const findIndex = userData.favourites.indexOf(listingId)
-            if(findIndex > -1) {
-              userData.favourites.splice(findIndex, 1);
-              setUserFavourite(userDataRef.current.favourites)
-              localStorage.setItem('userData', JSON.stringify(userData))
-            }
-          } else {
-            // toast.error('Something went wrong')
-            e.target.classList.remove('color-grey');
-            e.target.classList.add('text-danger');
-          }
-        })
-      }
-    } else {
-      localStorage.setItem('next', window.location.pathname+window.location.search)
-      router.push('/login')
-    }
-  }
+  // const addRemoveFavourite = (e, listingId) => {
+  //   e.preventDefault();
+  //   if(userData?.session === true) {
+  //     const isFavourite = userData.favourites.indexOf(listingId);
+  //     const action  = isFavourite === -1? 'add' : 'color-grey';
+  //     const data = {
+  //       listingId : listingId,
+  //       userId : userData.id
+  //     }
+  //     if(action === 'add') {
+  //       e.target.classList.add('text-danger');
+  //       axios.post(ADD_FAVOURITE, data).then(res => {
+  //         if(res.data.type !== 'success') {
+  //           // toast.error('Something went wrong')
+  //           e.target.classList.remove('text-danger');
+  //           e.target.classList.add('color-grey');
+  //         }
+  //         for (var key in res.data.data) {
+  //           if(res.data.data.hasOwnProperty(key) && key === 'listingId') {
+  //             userData.favourites.push(res.data.data[key])
+  //           }
+  //         }
+  //         setUserFavourite(userDataRef.current.favourites)
+  //         localStorage.setItem('userData', JSON.stringify(userData))
+  //       })
+  //     } else {
+  //       e.target.classList.add('color-grey');
+  //       axios.delete(`${DELETE_FAVOURITE}/${data.listingId}/${data.userId}`).then(res => {
+  //         if(res.data.type === 'success') {
+  //           const findIndex = userData.favourites.indexOf(listingId)
+  //           if(findIndex > -1) {
+  //             userData.favourites.splice(findIndex, 1);
+  //             setUserFavourite(userDataRef.current.favourites)
+  //             localStorage.setItem('userData', JSON.stringify(userData))
+  //           }
+  //         } else {
+  //           // toast.error('Something went wrong')
+  //           e.target.classList.remove('color-grey');
+  //           e.target.classList.add('text-danger');
+  //         }
+  //       })
+  //     }
+  //   } else {
+  //     localStorage.setItem('next', window.location.pathname+window.location.search)
+  //     router.push('/login')
+  //   }
+  // }
 
   const reportThisUser = (e, userId) => {}
 
@@ -384,14 +384,14 @@ const Listing: FC = () => {
                 <div className="item-footer">
                   <ul className="row align-content-center">
                     <li className="col color-grey" title="Paid Member"><i className="fa fa-star"></i></li>
-                    <li className="col list-fav" title="Add to favourites">
+                    {/* <li className="col list-fav" title="Add to favourites">
                       <a 
                         href="#" 
                         className={userFavouritesRef.current?.indexOf(list._id) > -1? 'text-danger' : 'color-grey'} 
                         onClick={(e) => addRemoveFavourite(e, list._id)}>
                           <i className="fa fa-heart"></i>
                       </a>
-                    </li>
+                    </li> */}
                     <li className="col color-grey" title="Verified"><i className="fa fa-user-check"></i></li>
                     <li className='col' title="Report this user">
                       <a href="#" className="color-grey" onClick={(e) => reportThisUser(e, list._id)}>

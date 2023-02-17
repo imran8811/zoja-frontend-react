@@ -17,13 +17,18 @@ const Settings:FC = () => {
     name : string,
     token : string
   }
+  type userInfo = {
+    email : string,
+    state : string,
+    created_at : string
+  }
   const toast = useRef<Toast>(null);
   const router = useRouter();
   const [visible, setVisible] = useState(false);
   const [visibleEmailDialog, setVisibleEmailDialog] = useState(false);
   const [invalidCredentials, setInvalidCredentials] = useState(false);
   const [userData, setUserData, userDataRef] = useState<userData>();
-  const [userInfo, setUserInfo, userInfoRef] = useState();
+  const [userInfo, setUserInfo, userInfoRef] = useState<userInfo>();
   const { register, handleSubmit, getValues, watch, formState: { errors} } = useForm();
   const { register: register2, handleSubmit: handleSubmit2, getValues: getValues2, watch: watch2, formState: { errors: errors2}} = useForm();
 
@@ -136,7 +141,7 @@ const Settings:FC = () => {
         <div className="col-6 mb-5">
           <div className="white-box">
             <div className="mb-5 mt-5">
-              <p onClick={() => {setVisibleEmailDialog(true)}}><strong>Update Email: </strong>  {userInfoRef?.current?.email} <i className="fa fa-edit"></i></p>
+              <p onClick={() => {setVisibleEmailDialog(true)}}><strong>Update Email: </strong>  {userInfoRef.current?.email} <i className="fa fa-edit"></i></p>
             </div>
             <form onSubmit={handleSubmit(updatePassword)}>
               <div className="mb-4">
@@ -153,8 +158,8 @@ const Settings:FC = () => {
             </form>
             <div className="row mt-3 mb-3">
               <div className="col-6">
-                <p><strong>Member Status: </strong>{userInfoRef?.current?.state === '0'? 'Inactive' : 'Active'}</p>
-                <p><strong>Member Since: </strong>{new Date(userInfoRef?.current?.created_at).toDateString()}</p>
+                <p><strong>Member Status: </strong>{userInfoRef.current?.state === '0'? 'Inactive' : 'Active'}</p>
+                <p><strong>Member Since: </strong>{new Date(userInfoRef.current?.created_at).toDateString()}</p>
                 <button type='button' className='btn btn-danger' onClick={()=>setVisible(true)}>Delete Profile</button>  
               </div>
             </div>
