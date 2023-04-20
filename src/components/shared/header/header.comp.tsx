@@ -23,7 +23,7 @@ const Header: FC = () => {
 
   useEffect(() => {
     setLoggedIn(getSession())
-    setUserData(JSON.parse(localStorage.getItem('userData')))
+    // setUserData(JSON.parse(localStorage.getItem('userData')))
   }, [])
 
   const userLogout = async(e) => {

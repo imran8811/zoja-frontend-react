@@ -4,9 +4,10 @@ import { useRouter } from "next/dist/client/router";
 const axios = require('axios');
 import { useForm } from 'react-hook-form';
 import Steps from "../steps/steps";
+import { userModel } from "../../types/user.model";
 
 import { AGE_SELECTION, POPULAR_CASTS, CITIES, ORIGIN, RELIGIONS, STATUS } from '../../constants';
-import { CREATE_PROFILE, USER_LOGOUT } from "../../endpoints";
+import { CREATE_PROFILE, CREATE_USER, USER_LOGOUT } from "../../endpoints";
 import { validateEmail, validatePassword, getSession } from "../../utilities";
 import Link from "next/link";
 
@@ -18,13 +19,14 @@ const CreateProfile:FC = () => {
   const [religion, setReligion] = useState('')
   const [disability, setDisability] = useState('')
   const [status, setStatus, statusRef] = useState('')
-  const [userData, setUserData, userDataRef] = useState()
+  const [userData, setUserData, userDataRef] = useState<userModel>()
   const [loggedIn, setLoggedIn, loggedInRef] = useState<Boolean>(false);
   const [activeStep, setActiveStep] = useState(1);
   const [errorType, setErrorType, errorTypeRef] = useState('');
-  const [invalidEmail, setInvalidEmail] = useState(false)
+  // const [invalidEmail, setInvalidEmail] = useState(false)
   const [emailAlreadyRegistered, setEmailAlreadyRegistered] = useState(false)
-  const [confirmPasswordInvalid, setConfirmPasswordInvalid] = useState(false)
+  // const [confirmPasswordInvalid, setConfirmPasswordInvalid] = useState(false);
+  let formValid = true;
   const formSteps = { 
     1 : [
       {
@@ -35,7 +37,7 @@ const CreateProfile:FC = () => {
         }
       },
       {
-        name: 'profileType',
+        name: 'gender',
         types: {
           required: 'Required',
         } 
@@ -113,6 +115,7 @@ const CreateProfile:FC = () => {
         name: 'businessDetails',
         types: {
           required : 'Required',
+          minLength : 'Minimum 3 characters',
         }
       },
       {
@@ -125,12 +128,14 @@ const CreateProfile:FC = () => {
         name: 'jobLocation',
         types: {
           required : 'Required',
+          minLength : 'Minimum 3 characters',
         }
       },
       {
         name: 'businessLocation',
         types: {
           required : 'Required',
+          minLength : 'Minimum 3 characters',
         }
       },
       {
@@ -359,33 +364,65 @@ const CreateProfile:FC = () => {
     { stepNo : 4, label: 'Profession' },
     { stepNo : 5, label: 'Education' },
     { stepNo : 6, label: 'Religion' },
-    { stepNo : 7, label: 'Body' },
+    { stepNo : 7, label: 'Appearance' },
     { stepNo : 8, label: 'Location' },
     { stepNo : 9, label: 'Family' },
     { stepNo : 10, label: 'Others' }
   ]
 
-  const onSubmit = (data) => {
-    setInvalidEmail(false)
-    setEmailAlreadyRegistered(false)
-    setConfirmPasswordInvalid(false)
+  const stepTypes = {
+    1 : 'login',
+    2 : 'photos',
+    3 : 'personal',
+    4 : 'profession',
+    5 : 'education',
+    6 : 'religion',
+    7 : 'appearance',
+    8 : 'location',
+    9 : 'family',
+    10 : 'others',
+  }
+
+  const onSubmit = async (data) => {
+    // setInvalidEmail(false)
+    setEmailAlreadyRegistered(false);
+    // setConfirmPasswordInvalid(false)
     const { type, email, password, fullName, confirmPassword } = getValues()
-    if(password !== confirmPassword) {
-      setConfirmPasswordInvalid(true);
-      return;
-    }
-    const formData = {...data}
-    console.log(formData);
-    axios.post(CREATE_PROFILE, formData).then(res => {
-      if(res.data.type === 'success') {
+
+    const formData = {...data, step : stepTypes[activeStep]};
+    if(stepTypes[activeStep] === 'login'){
+      await axios.post(CREATE_USER, formData).then(res => {
+        setUserData({
+          id : res.data.user.id,
+          token : res.data.token,
+          profileScore : res.data.user.profileScore,
+          fullName: res.data.user.fullName
+        })
+        localStorage.setItem('userData', JSON.stringify(userDataRef.current));
+        if(res.data.type === 'success') {
+          console.log(userDataRef.current);
+          setActiveStep(activeStep+1);
+        } 
+      }).catch(err => {
+        console.log(err.response);
+        if(err?.response?.data.errors?.email){
+          setEmailAlreadyRegistered(true);
+        }
+      })  
+    } else {
+      formData['userId'] = userDataRef.current.userId;
+      await axios.post(CREATE_PROFILE, formData).then(res => {
+        // if(res.data.type === 'success') {
         // userDataRef.current.profileScore = res.data.profileScore;
+        setActiveStep(activeStep+1);
         // router.push('/profile/'+userDataRef.current.id);
-      } else {
-        // toast.error(res.data.message);
-      }
-    }).catch(err => {
-      console.log(err.response)
-    })
+      // } else {
+      //   toast.error(res.data.message);
+      // }
+      }).catch(err => {
+        console.log(err.response)
+      })
+    }
   }
 
   const prevStep = () => {
@@ -418,7 +455,6 @@ const CreateProfile:FC = () => {
       }
     }
 
-    let formValid = true;
     for(let i = 0; i < formSteps[activeStep].length; i++){
       const inputValue = getValues(formSteps[activeStep][i].name);
       checkErrorType(formSteps[activeStep][i], inputValue);
@@ -446,15 +482,17 @@ const CreateProfile:FC = () => {
         clearErrors(formSteps[activeStep][i].name);
       }
     }
-    formValid? setActiveStep(activeStep+1) : setActiveStep(activeStep);
+    if(formValid) {
+      handleSubmit(onSubmit)();
+    }
   }
   return  (
-    <form method="POST" className="mb-5" onSubmit={handleSubmit(onSubmit)}>
+    <form method="POST" className="mb-5">
       <h1 className="text-center pt-3 pb-3">Create Profile</h1>
       <Steps steps={steps} setActiveStep={setActiveStep} initialStep={activeStep} />
       <div className="row profile-page">
         { activeStep === 1 &&
-          <div className="col-lg-4 white-box">
+          <div className="col-lg-5 white-box">
             <h4 className="mb-3 section-heading">Login Details</h4>
             <div className="mb-3">
               <label htmlFor="full-name">Full Name</label>
@@ -463,12 +501,12 @@ const CreateProfile:FC = () => {
             </div>
             <div className="mb-3">
               <label htmlFor="gender">Gender</label>
-              <select id="gender" className="select-input" {...register('profileType')}>
+              <select id="gender" className="select-input" {...register('gender')}>
                 <option value="">Select</option>
                 <option value="male">Male</option>
                 <option value="female">Female</option>
               </select>
-              { errors.profileType && <p className="text-danger text-sm">{errors.profileType.message}</p> }
+              { errors.gender && <p className="text-danger text-sm">{errors.gender.message}</p> }
             </div>
             <div className="mb-3">
               <label htmlFor="email">Email*</label>
@@ -480,7 +518,7 @@ const CreateProfile:FC = () => {
               { errors.email && <p className="text-danger text-sm">{errors.email.message}</p>}
               { emailAlreadyRegistered &&
                 <p className="small text-danger">
-                  <small>Email already Registered try <Link href="/forgot-password">Forgot Password</Link></small>
+                  User already registered <Link href="/login">Login</Link> or <Link href="/forgot-password">Forgot Password</Link>
                 </p>
               }
             </div>
@@ -502,12 +540,12 @@ const CreateProfile:FC = () => {
           </div>
         }
         { activeStep === 2 &&
-          <div className="col-lg-4 white-box">
+          <div className="col-lg-5 white-box">
             <h4 className="mb-3 section-heading">Photos</h4>
           </div>
         }
         { activeStep === 3 &&
-          <div className="col-lg-4 white-box">
+          <div className="col-lg-5 white-box">
             <h4 className="mb-3 section-heading">Personal</h4>
             <div className="mb-3">
               <label htmlFor="contact-no">Contact Number</label>
@@ -550,14 +588,14 @@ const CreateProfile:FC = () => {
               </select>
               {errors.maritalStatus && <p className="text-danger text-sm">{errors.maritalStatus.message}</p>}
             </div>
-            { (
+            {(
               statusRef.current === 'divorcedWithChildren' ||
               statusRef.current === 'widowerWithChildren' || 
               statusRef.current === 'separatedWithChildren' || 
               statusRef.current === 'marriedWithChildren') &&
               <div className="mb-3">
                 <div className="row">
-                  <div className="col-lg-6">
+                  <div className="col-lg-6 mb-3">
                     <label>No. of Sons</label>
                     <select className='select-input' {...register('noOfSons')}>
                       <option value="">Select</option>
@@ -575,6 +613,7 @@ const CreateProfile:FC = () => {
                       <option value="11">11</option>
                       <option value="12">12</option>
                     </select>
+                    {errors.noOfSons && <p className="text-danger text-sm">{errors.noOfSons.message}</p>}
                   </div>
                   <div className="col-lg-6">
                     <label>No. of Daughters</label>
@@ -594,15 +633,15 @@ const CreateProfile:FC = () => {
                       <option value="11">11</option>
                       <option value="12">12</option>
                     </select>
+                    {errors.noOfDaughters && <p className="text-danger text-sm">{errors.noOfDaughters.message}</p>}
                   </div>
                 </div>
-                {(errors.noOfSons || errors.noOfDaughters)  && <p className="text-danger text-sm">{errors.noOfDaughters.message}</p>}
               </div>
             }
           </div>
         }
         { activeStep === 4 &&
-          <div className="col-lg-4 white-box">
+          <div className="col-lg-5 white-box">
             <h4 className="mb-3 section-heading">Profession</h4>
             <div className="mb-3">
               <label htmlFor="profession">Profession Type</label>
@@ -615,21 +654,21 @@ const CreateProfile:FC = () => {
               </select>
               {errors.professionType && <p className="text-danger text-sm">{errors.professionType.message}</p>}
             </div>
-            { professionType === 'business' && 
+            { (professionType === 'business' || professionType === 'jobBusiness') && 
               <div className="mb-3">
                 <label htmlFor="business-details">Business Details</label>
                 <textarea rows={5} className="form-control" {...register('businessDetails')} placeholder="Shop, Trading, Factory"></textarea>
                 {errors.businessDetails && <p className="text-danger text-sm">{errors.businessDetails.message}</p>}
               </div>
             }
-            { professionType === 'job' &&
+            { (professionType === 'job' || professionType === 'jobBusiness') &&
               <div className="mb-3">
                 <label htmlFor="profession-title">Profession Title</label>
                 <input type="text" id="profession-title" className="form-control" {...register('professionTitle')} placeholder="Engineer, Doctor, Accountant" />
                 {errors.professionTitle && <p className="text-danger text-sm">{errors.professionTitle.message}</p>}
               </div>
             }
-            { professionType === 'jobBusiness' &&
+            {/* { professionType === 'jobBusiness' &&
               <>
                 <div className="mb-3">
                   <label htmlFor="job-title">Job Title</label>
@@ -642,7 +681,7 @@ const CreateProfile:FC = () => {
                   {errors.professionTitle && <p className="text-danger text-sm">{errors.businessDetails.message}</p>}
                 </div>
               </>
-            }
+            } */}
             { (professionType === 'job' || professionType === 'jobBusiness') &&
               <div className="mb-3">
                 <label htmlFor="job-location">Job Location</label>
@@ -665,7 +704,7 @@ const CreateProfile:FC = () => {
           </div>
         }
         { activeStep === 5 &&
-          <div className="col-lg-4 white-box">
+          <div className="col-lg-5 white-box">
             <h4 className="mb-3 section-heading">Education</h4>
             <div className="mb-3">
               <label htmlFor="degree-level">Degree Level</label>
@@ -708,7 +747,7 @@ const CreateProfile:FC = () => {
           </div>
         }
         { activeStep === 6 &&
-          <div className="col-lg-4 white-box">
+          <div className="col-lg-5 white-box">
             <h4 className="mb-3 section-heading">Religion</h4>
             <div className="mb-3">
               <label htmlFor="religion">Religion</label>
@@ -730,8 +769,8 @@ const CreateProfile:FC = () => {
           </div>
         }
         { activeStep === 7 &&
-          <div className="col-lg-4 white-box">
-            <h4 className="mb-3 section-heading">Body</h4>
+          <div className="col-lg-5 white-box">
+            <h4 className="mb-3 section-heading">Appearance</h4>
             <div className="mb-3">
               <label htmlFor="age">Age</label>
               <select id="age" className="select-input" {...register('age')}>
@@ -757,12 +796,12 @@ const CreateProfile:FC = () => {
             
             <div className="mb-3">
               <div className="row">
-                <div className="col-4">
+                <div className="col-sm-4 col-md-4 col-lg-4">
                   <label htmlFor="weight">Weight in KG</label>
                   <input type="text" className="form-control" {...register('weight')} placeholder="70, 80" id="weight" />
                   {errors.weight && <p className="text-danger text-sm">{errors.weight.message}</p>}
                 </div>
-                <div className="col-4">
+                <div className="col-sm-4 col-md-4 col-lg-4">
                   <label htmlFor="feet">Height (Feet)</label>
                   <select id="feet" {...register('feet')} className="select-input">
                     <option value="">Select</option>
@@ -779,7 +818,7 @@ const CreateProfile:FC = () => {
                   </select>
                   {errors.feet && <p className="text-danger text-sm">{errors.feet.message}</p>}
                 </div>
-                <div className="col-4">
+                <div className="col-sm-4 col-md-4 col-lg-4">
                   <label htmlFor="inch">Height (Inches)</label>
                   <select id="inch" {...register('inch')} className="select-input">
                     <option value="">Select</option>
@@ -801,8 +840,8 @@ const CreateProfile:FC = () => {
               </div>
             </div>
             <div className="mb-3">
-              <label htmlFor="weight">Hairs or Bald</label>
-              <select id="inch" {...register('headType')} className="select-input">
+              <label htmlFor="head-type">Hairs or Bald</label>
+              <select id="head-type" {...register('headType')} className="select-input">
                 <option value="">Select</option>
                 <option value="hairs">Hairs</option>
                 <option value="bald">Bald</option>
@@ -812,7 +851,7 @@ const CreateProfile:FC = () => {
           </div>
         }
         { activeStep === 8 &&
-          <div className="col-lg-4 white-box">
+          <div className="col-lg-5 white-box">
             <h4 className="mb-3 section-heading">Current Address</h4>
             <div className="mb-3">
               <label htmlFor="country">Country</label>
@@ -874,7 +913,7 @@ const CreateProfile:FC = () => {
           </div>
         }
         { activeStep === 9 &&
-          <div className="col-lg-4 white-box">
+          <div className="col-lg-5 white-box">
             <h4 className="mb-3 section-heading">Family</h4>
             <div className="mb-3">
               <label htmlFor="father">Father Alive?</label>
@@ -996,7 +1035,7 @@ const CreateProfile:FC = () => {
           </div>
         }
         { activeStep === 10 &&
-          <div className="col-lg-4 white-box">
+          <div className="col-lg-5 white-box">
             <h4 className="mb-3 section-heading">Others</h4>
             <div className="mb-3">
               <label htmlFor="disability">Disability</label>
@@ -1047,14 +1086,16 @@ const CreateProfile:FC = () => {
             </div>
           </div>
         }
-        <div className="col-lg-12 text-center mt-3 mb-3 p-0">
+      </div>
+      <div className="row justify-content-center">
+        <div className="col-lg-5 d-flex justify-content-between mt-3 mb-3 p-0">
           <button type="button" className="btn btn-lg btn-primary mr-5" disabled={activeStep === 0} onClick={() => prevStep()}><i className="fa fa-arrow-left"></i>&nbsp; Back</button>
-          { activeStep <= 9 &&
-            <button type="button" className="btn btn-lg btn-primary bg-pink ml-5" onClick={() => nextStep()}>Next &nbsp; <i className="fa fa-arrow-right"></i></button>
-          }
-          { activeStep === 10 &&
-            <button type="button" className="btn btn-lg btn-success ml-5" onClick={handleSubmit(onSubmit)}>Submit</button>
-          }
+          <button type="button" className="btn btn-lg btn-primary btn-success ml-5" onClick={() => nextStep()}>Save &nbsp; <i className="fa fa-arrow-right"></i></button>
+          {/* { activeStep <= 9 && */}
+          {/* } */}
+          {/* { activeStep === 10 && */}
+            {/* <button type="button" className="btn btn-lg btn-success ml-5" onClick={handleSubmit(onSubmit)}>Submit</button> */}
+          {/* } */}
           </div>
       </div>
       {/* <div className="col-lg-12 text-end mt-3 mb-3 p-0">

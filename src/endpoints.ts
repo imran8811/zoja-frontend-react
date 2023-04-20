@@ -2,7 +2,7 @@
 const baseRoute = 'https://pksoftsolutions.com/api/zoja';
 
 //authentication
-export const REGISTER_USER = baseRoute+'/user/register';
+export const CREATE_USER = baseRoute+'/user/create';
 export const USER_LOGIN = baseRoute+'/user/login';
 export const GET_USER = baseRoute+'/user';
 export const USER_LOGOUT = baseRoute+'/user/logout';

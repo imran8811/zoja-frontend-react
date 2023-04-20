@@ -16,12 +16,8 @@ export const validatePassword = (value) => {
 
 export const getSession = () => {
   const storageData = JSON.parse(localStorage.getItem('userData'));
-  if(storageData) {
-    if(storageData.session === true) {
-      return true
-    } else {
-      return false
-    }
+  if(storageData?.token) {
+    return true;
   } else {
     return false;
   }

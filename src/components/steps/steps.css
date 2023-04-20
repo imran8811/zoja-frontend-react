@@ -13,6 +13,6 @@
     font-weight: bold;
 }
 .steps li.active, .steps li:hover {
-    background-color: blue;
-    color: #fff
+    background-color: #ef398c;
+    color: #fff;
 }
